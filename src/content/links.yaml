@@ -7,12 +7,12 @@
   url: https://astro.build
   avatar: https://astro.build/favicon.svg
   desc:
-    en: The framework this site is built on. Ships HTML first and JavaScript only when asked.
-    zh: 本站的底层框架：先把 HTML 送到浏览器，只有确实需要时才加载 JavaScript。
+    en: The framework behind this site. It keeps a mostly static site close to HTML without giving up components.
+    zh: 本站使用的框架。它让站点保持接近原生 HTML，同时仍然可以使用组件化开发。
 
 - id: example-friend
   name: Example Friend
   url: https://example.com
   desc:
-    en: A placeholder entry — swap it for someone whose writing you actually return to.
-    zh: 示例条目，等着换成一个你真正愿意反复阅读的人。
+    en: A temporary entry. Replace it with a person whose work you genuinely read.
+    zh: 临时占位，之后会换成一个你真的会读、我也真的会读的人。

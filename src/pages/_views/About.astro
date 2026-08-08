@@ -23,42 +23,42 @@ const t = useTranslations(lang);
 
 const copy = {
   en: {
-    lede: '“Skr” is short for seeker. I build small, well-made software and write down what the building taught me.',
+    lede: 'Skr is short for seeker. I build small software, care about the boring details, and write about what I learn along the way.',
     body: [
-      'I work mostly on the parts of a system nobody demos: the build, the routing, the thing that decides what a page costs to load. It is unglamorous and it is where most of the quality lives.',
-      'My taste runs to tools that do one job, formats that outlive their readers, and interfaces that stay legible when the network is bad. I would rather ship something small that still works in five years than something impressive that needs a rewrite in one.',
-      'Away from the keyboard I read charts and old navigation manuals, which is where the compass on this site comes from.',
+      'Most of my work happens below the surface: build pipelines, routing, data formats, and the budget a page has for loading. Nobody demos these parts, but they shape whether a product feels dependable.',
+      'I prefer tools with a clear job, formats that remain readable years later, and interfaces that hold up on a slow connection. I am less interested in adding features than in removing the reasons a feature needs explaining.',
+      'Outside work, I read, take notes, and occasionally make things that have nothing to do with software. That habit usually improves the software.',
     ],
-    nowTitle: 'What I am on right now',
+    nowTitle: 'What I am working on',
     now: [
-      'Rebuilding this site by hand, one component at a time.',
-      'A repository-reading CLI that prints the map a README never has.',
-      'Reading about pre-GPS ocean navigation, mostly for the vocabulary.',
+      'Keeping this site small enough to understand in one sitting.',
+      'A CLI that gives a repository a useful map: entry points, active files, and ownership.',
+      'Writing about the trade-offs behind tools I use and build.',
     ],
-    colophonTitle: 'Colophon',
+    colophonTitle: 'About this site',
     colophon:
-      'Astro with static output, Tailwind for the token layer, and no client framework. The type is Fraunces over Inter; Chinese uses whatever the reader’s system provides, because shipping a CJK webfont costs more than it is worth. Most pages send no JavaScript at all — the exceptions are the theme toggle and the mobile menu. Built by hand, no template. Deployed from CI to a small server behind nginx.',
-    contactTitle: 'Say hello',
-    contactBody: 'Email is best, and I answer it. The other places are where I lurk.',
+      'The site is statically generated with Astro. Tailwind supplies the design tokens; there is no client framework. Fraunces and Inter handle Latin text, while CJK text uses the reader’s installed fonts. Most pages ship no JavaScript; theme switching, the mobile menu, and a few small behaviors are the exceptions. Everything is kept in the repository and deployed by CI to a small server behind nginx.',
+    contactTitle: 'Get in touch',
+    contactBody: 'Email is the reliable way to reach me. The other links are places I occasionally post.',
   },
   zh: {
-    lede: '「Skr」是 seeker 的缩写，意思是寻找者。我做小而耐用的软件，也把一路上的心得写下来。',
+    lede: 'Skr 是 seeker 的缩写。我做小型软件，认真对待那些不显眼的细节，也把一路上学到的东西写下来。',
     body: [
-      '我常常在做那些没人拿来演示的部分：构建流程、路由，还有决定页面加载成本的底层细节。它们不太显眼，却往往决定了一个东西好不好用。',
-      '我喜欢只专注一件事的工具、能经得起时间的文件格式，以及在网络不佳时依然清楚好用的界面。比起一时惊艳、过不了多久就要重写的作品，我更愿意做一件五年后还跑得动的小东西。',
-      '不敲键盘的时候，我会读海图和旧航海手册。这个站点上的罗盘，就是从那里来的。',
+      '我大多数时间都在处理不太适合拿来演示的部分：构建流程、路由、数据格式，以及页面加载要花多少成本。这些东西藏在表面之下，却决定了一个产品是否可靠。',
+      '我偏爱职责清楚的工具、过几年仍然读得懂的格式，以及网络很慢时依旧好用的界面。比起不断增加功能，我更在意删掉那些让功能必须被解释的原因。',
+      '不写代码的时候，我会读书、记笔记，也会做一些和软件无关的东西。很多时候，后者反而会让前者做得更好。',
     ],
-    nowTitle: '最近在忙什么',
+    nowTitle: '最近在做',
     now: [
-      '把这个站点重新手写一遍，一点一点打磨细节。',
-      '做一个读仓库的命令行工具，补上 README 常常省略的那张地图。',
-      '翻看 GPS 出现之前的远洋导航史，顺便收集那些讲究又迷人的旧词。',
+      '把这个站点控制在一眼能看懂的规模。',
+      '做一个给仓库画出实用地图的命令行工具：入口、活跃文件和维护关系。',
+      '写下我使用和构建工具时遇到的取舍。',
     ],
-    colophonTitle: '本站小记',
+    colophonTitle: '关于本站',
     colophon:
-      '本站使用 Astro 输出静态页面，Tailwind 只负责设计令牌，没有引入客户端框架。西文是 Fraunces 与 Inter，中文则使用读者设备已有的字体：为 CJK 单独打包 webfont，成本通常高于收益。除主题切换和移动端菜单外，页面不发送 JavaScript。设计和代码均为手工完成，通过 CI 部署到一台由 nginx 提供服务的小服务器上。',
-    contactTitle: '来打个招呼',
-    contactBody: '邮件最方便，我会认真回复。其他几个入口，是我偶尔出现的地方。',
+      '本站使用 Astro 输出静态页面，Tailwind 负责设计令牌，没有引入客户端框架。西文使用 Fraunces 和 Inter，中文使用读者设备已有的字体。大多数页面不发送 JavaScript，主题切换、移动端菜单和少数交互是例外。所有内容都保存在仓库里，再由 CI 部署到 nginx 后面的一台小服务器上。',
+    contactTitle: '联系我',
+    contactBody: '邮件最可靠，我通常都会回复。其他链接是我偶尔发东西的地方。',
   },
 }[lang];
 

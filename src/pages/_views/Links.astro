@@ -26,8 +26,8 @@ const email = SOCIALS.find((s) => s.href.startsWith('mailto:'));
 /** What a friend should send me — mirrors the fields in links.yaml. */
 const fields =
   lang === 'zh'
-    ? ['站点名称', '网址', '头像（可选）', '一两句介绍']
-    : ['Name', 'URL', 'Avatar (optional)', 'One-line description'];
+    ? ['站点名称', '网址', '头像（有的话）', '简短介绍']
+    : ['Site name', 'URL', 'Avatar (optional)', 'Short description'];
 ---
 
 <Base title={t('links.title')} description={t('links.subtitle')} lang={lang}>

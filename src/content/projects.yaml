@@ -7,8 +7,8 @@
     en: skr.moe
     zh: skr.moe
   summary:
-    en: This site. A hand-drawn Astro build with a bilingual routing layer, zero client JS on most pages, and a compass rose for a mascot.
-    zh: 这个站点本身。用 Astro 手写，配了双语路由；大多数页面不需要客户端 JavaScript，站点里那枚罗盘是它的小小标记。
+    en: The source for this site. A bilingual Astro build with static output, a deliberately small client-side surface, and a design system kept in the repository.
+    zh: 本站的源代码：一个双语 Astro 站点，页面默认静态输出，客户端脚本保持在最低限度，设计系统也直接放在仓库里。
   year: 2026
   stack: [Astro, TypeScript, Tailwind CSS, nginx]
   repo: https://github.com/TideSkr/portfolio
@@ -21,8 +21,8 @@
     en: Driftwood
     zh: Driftwood
   summary:
-    en: A tiny static-file server that reloads on change and does nothing else. Under 300 lines.
-    zh: 一个小巧的静态文件服务器，文件一改就自动刷新，除此之外不添任何多余功能。整个实现不到 300 行。
+    en: A tiny static-file server for local work. It watches a directory, serves files, and reloads the page when something changes.
+    zh: 为本地开发准备的极简静态文件服务器。监听目录、提供文件，内容变化时刷新页面，仅此而已。
   year: 2025
   stack: [Go, HTTP/2]
   repo: https://github.com/TideSkr/driftwood
@@ -34,8 +34,8 @@
     en: Sextant
     zh: Sextant
   summary:
-    en: CLI that reads a repository and prints the map I wish every README had — entry points, hot files, and who touches what.
-    zh: 一个命令行工具，读取仓库后，给出一张 README 往往缺少的地图：从哪里进入、哪些文件最热，以及代码最近由谁改动。
+    en: A repository-inspection CLI that surfaces entry points, frequently changed files, and the relationships hidden in a codebase.
+    zh: 一个检查代码仓库的命令行工具，把入口、经常变动的文件，以及代码结构里隐藏的关系整理出来。
   year: 2025
   stack: [Rust, tree-sitter]
   repo: https://github.com/TideSkr/sextant
@@ -47,8 +47,8 @@
     en: Lighthouse
     zh: Lighthouse
   summary:
-    en: Self-hosted read-later that strips a page to its text and keeps it forever. Retired in favour of plain Markdown files.
-    zh: 自托管的稍后阅读工具，把网页收拾成干净的正文并长期保存。后来发现纯 Markdown 更合适，于是把它归档了。
+    en: A self-hosted read-later tool that extracted the useful part of a page and stored it locally. Retired after plain Markdown proved simpler.
+    zh: 一个自托管的稍后阅读工具，提取网页正文并保存在本地。后来发现纯 Markdown 更简单，于是停止维护。
   year: 2024
   stack: [Node.js, SQLite]
   repo: https://github.com/TideSkr/lighthouse
