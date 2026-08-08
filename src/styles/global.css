@@ -54,7 +54,9 @@
   --card-hover: #142549;
   --ink: #e8eefb;
   --ink-dim: #93a4c4;
-  --ink-faint: #5f7196;
+  /* Lifted off the raw palette value (#5f7196) so it clears 4.5:1 even on
+     --card-hover, which is the lightest thing this ever sits on. */
+  --ink-faint: #818fac;
   --line: color-mix(in oklab, #93a4c4 22%, transparent);
   --line-strong: color-mix(in oklab, #93a4c4 40%, transparent);
   --accent: #4c8dff;
@@ -75,13 +77,15 @@
   --card-hover: #f7f9fe;
   --ink: #081026;
   --ink-dim: #48597c;
-  --ink-faint: #7183a6;
+  --ink-faint: #5d6b88;
   --line: color-mix(in oklab, #0a1530 14%, transparent);
   --line-strong: color-mix(in oklab, #0a1530 28%, transparent);
   --accent: #1743be;
   --accent-quiet: #2a5ce0;
-  --beacon: #b25f1c;
-  --brass: #8a7648;
+  /* Both are darker than their dark-theme twins: the same hue that reads as a
+     warm glow on the abyss becomes low-contrast text on paper. */
+  --beacon: #a25619;
+  --brass: #79683f;
   --star-opacity: 0.22;
   --horizon-glow: 0.3;
   --shadow-lift: 0 18px 40px -28px rgb(8 16 38 / 0.4);

@@ -11,9 +11,19 @@ interface Props {
   /** The first card on a listing gets a larger treatment. */
   featured?: boolean;
   showTags?: boolean;
+  /**
+   * Heading level for the title. A listing puts these directly under the page
+   * h1, while the homepage nests them under a section h2 — hard-coding either
+   * one leaves a skipped level on the other.
+   *
+   * Not named `as`: Astro reads that key as its polymorphic-component hint and
+   * quietly widens `Astro.props` to `any`, which costs the whole file its
+   * types for no visible reason.
+   */
+  titleAs?: 'h2' | 'h3';
 }
 
-const { post, lang, featured = false, showTags = true } = Astro.props;
+const { post, lang, featured = false, showTags = true, titleAs: Heading = 'h3' } = Astro.props;
 const t = useTranslations(lang);
 
 const href = getRelativeLocaleUrl(lang, `/blog/${post.id}`);
@@ -49,7 +59,7 @@ const foreign = post.data.lang !== lang;
     }
   </div>
 
-  <h3
+  <Heading
     class:list={[
       'mt-3 font-semibold transition-colors duration-200 group-hover:text-beacon-fg',
       featured ? 'text-2xl sm:text-[1.75rem]' : 'text-xl',
@@ -59,7 +69,7 @@ const foreign = post.data.lang !== lang;
     <a href={href} class="after:absolute after:inset-0 after:content-['']">
       {post.data.title}
     </a>
-  </h3>
+  </Heading>
 
   <p
     class="mt-2.5 line-clamp-3 text-sm leading-relaxed text-ink-dim"

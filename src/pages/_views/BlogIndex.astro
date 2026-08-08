@@ -92,7 +92,7 @@ const count = `${posts.length} ${posts.length === 1 ? t('blog.postCountOne') : t
       posts.length > 0 ? (
         <div class="mt-10 grid gap-5 sm:grid-cols-2">
           {posts.map((post) => (
-            <PostCard post={post} lang={lang} />
+            <PostCard post={post} lang={lang} titleAs="h2" />
           ))}
         </div>
       ) : (

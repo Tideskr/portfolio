@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="skr.moe">
+  <title>skr.moe</title>
+  <defs><linearGradient id="d" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0b1836"/><stop offset="1" stop-color="#050b1a"/>
+  </linearGradient></defs>
+  <rect width="64" height="64" rx="14" fill="url(#d)"/>
+  <g opacity="1">
+    <circle cx="32" cy="32" r="25.5" fill="none" stroke="#c9b896" stroke-width="0.8925000000000001" opacity="0.45"/>
+    <circle cx="32" cy="32" r="21.675" fill="none" stroke="#c9b896" stroke-width="0.51" opacity="0.25"/>
+    <polygon points="32,32 32,12.11 36.08,27.92" fill="#f6b073" opacity="0.92" transform="rotate(0 32 32)"/><polygon points="32,32 32,12.11 36.08,27.92" fill="#c9b896" opacity="0.92" transform="rotate(90 32 32)"/><polygon points="32,32 32,12.11 36.08,27.92" fill="#c9b896" opacity="0.92" transform="rotate(180 32 32)"/><polygon points="32,32 32,12.11 36.08,27.92" fill="#c9b896" opacity="0.92" transform="rotate(270 32 32)"/>
+    <polygon points="32,32 32,12.11 27.92,27.92" fill="#c9b896" opacity="0.42" transform="rotate(0 32 32)"/><polygon points="32,32 32,12.11 27.92,27.92" fill="#c9b896" opacity="0.42" transform="rotate(90 32 32)"/><polygon points="32,32 32,12.11 27.92,27.92" fill="#c9b896" opacity="0.42" transform="rotate(180 32 32)"/><polygon points="32,32 32,12.11 27.92,27.92" fill="#c9b896" opacity="0.42" transform="rotate(270 32 32)"/>
+    <polygon points="32,32 32,19.6682 34.448,29.552" fill="#c9b896" opacity="0.35" transform="rotate(45 32 32)"/><polygon points="32,32 32,19.6682 34.448,29.552" fill="#c9b896" opacity="0.35" transform="rotate(135 32 32)"/><polygon points="32,32 32,19.6682 34.448,29.552" fill="#c9b896" opacity="0.35" transform="rotate(225 32 32)"/><polygon points="32,32 32,19.6682 34.448,29.552" fill="#c9b896" opacity="0.35" transform="rotate(315 32 32)"/>
+    <circle cx="32" cy="32" r="2.805" fill="none" stroke="#f6b073" stroke-width="0.765" opacity="0.8"/>
+  </g>
+</svg>

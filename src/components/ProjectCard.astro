@@ -8,9 +8,11 @@ import { useTranslations } from '~/i18n/ui';
 interface Props {
   project: CollectionEntry<'projects'>;
   lang: Locale;
+  /** See PostCard — the level depends on whether a section heading precedes it. */
+  titleAs?: 'h2' | 'h3';
 }
 
-const { project, lang } = Astro.props;
+const { project, lang, titleAs: Heading = 'h3' } = Astro.props;
 const t = useTranslations(lang);
 
 const data = project.data;
@@ -44,9 +46,9 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
   </div>
 
   {/* The title is localised, so it must not be pinned to a language. */}
-  <h3 class="mt-4 text-lg leading-snug font-semibold">
+  <Heading class="mt-4 text-lg leading-snug font-semibold">
     {data.title[lang]}
-  </h3>
+  </Heading>
 
   <p class="mt-2 line-clamp-4 flex-1 text-sm leading-relaxed text-ink-dim">
     {data.summary[lang]}

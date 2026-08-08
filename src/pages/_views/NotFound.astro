@@ -1,0 +1,86 @@
+---
+/**
+ * Off course.
+ *
+ * Two copies get built — /404.html and /zh/404.html — and nginx picks by path
+ * prefix, because a static host has to choose the error document before it
+ * knows anything about the reader. Neither is reachable by navigation, so both
+ * are `noindex`.
+ */
+import CompassRose from '~/components/CompassRose.astro';
+import Icon from '~/components/Icon.astro';
+import Base from '~/layouts/Base.astro';
+import { NAV, type Locale } from '~/consts';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations } from '~/i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Everything except Home, which the big button already covers.
+const elsewhere = NAV.filter((item) => item.path !== '/');
+---
+
+<Base title={t('404.title')} description={t('404.body')} lang={lang} noindex>
+  <div class="page">
+    <div class="mx-auto flex max-w-xl flex-col items-center py-16 text-center sm:py-24">
+      <div class="relative">
+        <!-- The needle spins because the bearing is lost. -->
+        <CompassRose size={132} letters class="rose-adrift text-brass-fg/45" />
+      </div>
+
+      <p class="eyebrow mt-10">404</p>
+
+      <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+        {t('404.title')}
+      </h1>
+
+      <p class="mt-4 text-ink-dim text-pretty">{t('404.body')}</p>
+
+      <a
+        href={getRelativeLocaleUrl(lang, '/')}
+        class="card-surface mt-8 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-[border-color,color] hover:border-line-strong hover:text-beacon-fg"
+      >
+        <Icon name="arrowRight" size={14} class="rotate-180" />
+        {t('404.home')}
+      </a>
+
+      <nav class="mt-10 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm" aria-label={t('nav.menu')}>
+        {
+          elsewhere.map((item) => (
+            <a
+              href={getRelativeLocaleUrl(lang, item.path)}
+              class="link-beacon text-ink-faint hover:text-ink-dim"
+            >
+              {t(item.key)}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </div>
+</Base>
+
+<style>
+  /* A slow, uneasy drift rather than a spin — it should read as "lost", not
+     as a loading indicator. */
+  @media (prefers-reduced-motion: no-preference) {
+    .rose-adrift {
+      animation: adrift 24s ease-in-out infinite;
+    }
+  }
+
+  @keyframes adrift {
+    0%,
+    100% {
+      transform: rotate(-9deg);
+    }
+    50% {
+      transform: rotate(9deg);
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+# Everything is public. The mirrored posts carry <meta name="robots" content="noindex">
+# and are deliberately *not* disallowed here — a crawler has to fetch a page to
+# see that tag, so blocking it would leave the mirror indexed forever.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://skr.moe/sitemap-index.xml
