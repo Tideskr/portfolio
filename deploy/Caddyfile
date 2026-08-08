@@ -1,0 +1,100 @@
+# skr.moe — static site, served from an atomically-swapped release symlink.
+#
+# The origin sits behind Cloudflare's proxy, so TLS here is the *origin* leg of
+# a Full (strict) chain: Caddy still gets its own real certificate over HTTP-01,
+# and Cloudflare validates it. A self-signed origin cert would silently
+# downgrade the zone to plain "Full".
+
+{
+	email tideskr@skr.moe
+
+	# Cloudflare terminates the client connection, so the visitor's real IP
+	# arrives in a header. Without this, every log line would record a
+	# Cloudflare edge address instead.
+	#
+	# The ranges are inlined rather than fetched with the `cloudflare` IP source,
+	# which needs a plugin the stock binary doesn't carry. They change rarely;
+	# `deploy/sync-cloudflare-ips.sh` refreshes them.
+	servers {
+		trusted_proxies static 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22 2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32 2a06:98c0::/29 2c0f:f248::/32
+		client_ip_headers CF-Connecting-IP X-Forwarded-For
+	}
+}
+
+# www redirects to the apex, permanently. Its own site block, so it never
+# touches the file server.
+www.skr.moe {
+	redir https://skr.moe{uri} permanent
+}
+
+skr.moe {
+	root * /srv/skr.moe/current
+
+	encode zstd gzip
+
+	header {
+		# Cloudflare fronts this, but the origin still asserts its own policy —
+		# a misconfigured proxy rule shouldn't strip all of them.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+		Cross-Origin-Opener-Policy "same-origin"
+
+		# No third-party anything on this site, so the CSP can be strict.
+		# 'unsafe-inline' for style-src only: Astro inlines the critical CSS.
+		Content-Security-Policy "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+		Permissions-Policy "geolocation=(), microphone=(), camera=()"
+		-Server
+	}
+
+	# Content-hashed assets: safe to cache forever.
+	@immutable path /_astro/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# The icon set and OG card are stable but not hashed — a day is enough that
+	# a replacement propagates without a week of stale favicons.
+	@assets path /favicon.svg /apple-touch-icon.png /icon-*.png /og-default.png /site.webmanifest
+	header @assets Cache-Control "public, max-age=86400"
+
+	# HTML and the feeds must revalidate, or a deploy stays invisible until the
+	# browser cache expires on its own.
+	@revalidate {
+		path *.html / /blog /blog/* /projects /links /about /zh /zh/* /rss.xml /sitemap*.xml /robots.txt
+	}
+	header @revalidate Cache-Control "public, max-age=0, must-revalidate"
+
+	# A trailing slash would otherwise serve the same page at a second URL.
+	# This runs before try_files so /blog/ redirects rather than resolving.
+	@slash path_regexp dir ^(.+)/$
+	redir @slash {re.dir.1} permanent
+
+	# Astro is built with `format: 'file'` and `trailingSlash: 'never'`, so
+	# /blog is a real file at /blog.html. try_files maps the canonical URL onto
+	# it without a redirect.
+	try_files {path} {path}.html {path}/index.html
+
+	file_server
+
+	handle_errors {
+		# Two 404 documents exist. Pick by path prefix, since a static server
+		# has to choose before it knows anything about the reader.
+		@zh path /zh/*
+		rewrite @zh /zh/404.html
+		rewrite /404.html
+
+		# Without an explicit status the error page would be served as 200,
+		# which tells crawlers the missing page exists.
+		file_server {
+			status {err.status_code}
+		}
+	}
+
+	log {
+		output file /var/log/caddy/skr.moe.log {
+			roll_size 20mb
+			roll_keep 5
+		}
+	}
+}

@@ -1,0 +1,85 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# A second push while one deploy is mid-flight would race on the symlink swap.
+# Queue instead of cancelling: a half-uploaded release must still finish its
+# rsync before the next one starts.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Types and content-collection schemas. A broken build should fail here,
+      # before anything touches the server.
+      - run: pnpm check
+
+      - run: pnpm build
+
+      # Cheap guard against shipping an empty tree: rsync --delete on the
+      # server would happily replace a good release with nothing.
+      - name: Verify build output
+        run: |
+          test -f dist/index.html || { echo "dist/index.html missing"; exit 1; }
+          pages=$(find dist -name '*.html' | wc -l)
+          echo "built $pages pages"
+          [ "$pages" -ge 20 ] || { echo "only $pages pages — expected at least 20"; exit 1; }
+
+      - name: Configure SSH
+        run: |
+          install -d -m 700 ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          # Pinned host key — without it the first connection would trust
+          # whatever answers on that address.
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Upload release
+        run: |
+          # --link-dest hardlinks unchanged files against the live release, so a
+          # deploy that only touches one page costs one page of disk and one
+          # page of transfer, not a whole site.
+          rsync -az --delete --checksum \
+            --link-dest=/srv/skr.moe/current \
+            -e "ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" \
+            dist/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/srv/skr.moe/releases/${{ github.sha }}/"
+
+      - name: Activate
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
+            "/srv/skr.moe/activate.sh ${{ github.sha }}"
+
+      # Confirm the swap actually took, rather than trusting the exit code of a
+      # symlink rename.
+      - name: Smoke test
+        run: |
+          set -e
+          for path in / /blog /projects /links /about /zh /rss.xml; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --retry 3 --retry-delay 2 "https://skr.moe$path")
+            echo "$path -> $code"
+            [ "$code" = "200" ] || exit 1
+          done
+          code=$(curl -sS -o /dev/null -w '%{http_code}' https://skr.moe/definitely-not-a-page)
+          echo "/definitely-not-a-page -> $code"
+          [ "$code" = "404" ] || exit 1
