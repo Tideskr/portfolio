@@ -31,10 +31,20 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
       </span>
     </div>
 
-    <span class="font-[family-name:var(--font-mono)] text-xs text-ink-faint">{data.year}</span>
+    <div class="flex shrink-0 items-center gap-2">
+      {
+        data.archived && (
+          <span class="rounded-full border border-line px-2 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-ink-faint">
+            {t('projects.archived')}
+          </span>
+        )
+      }
+      <span class="font-[family-name:var(--font-mono)] text-xs text-ink-faint">{data.year}</span>
+    </div>
   </div>
 
-  <h3 class="mt-4 text-lg leading-snug font-semibold" lang="en">
+  {/* The title is localised, so it must not be pinned to a language. */}
+  <h3 class="mt-4 text-lg leading-snug font-semibold">
     {data.title[lang]}
   </h3>
 
@@ -85,12 +95,4 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
       )
     }
   </div>
-
-  {
-    data.archived && (
-      <span class="absolute top-4 right-4 rounded-full border border-line px-2 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-ink-faint">
-        {t('projects.archived')}
-      </span>
-    )
-  }
 </article>

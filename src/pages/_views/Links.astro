@@ -1,0 +1,103 @@
+---
+/**
+ * 友链. Outbound links to other people's sites, plus the terms for trading one.
+ */
+import CompassRose from '~/components/CompassRose.astro';
+import Icon from '~/components/Icon.astro';
+import LinkCard from '~/components/LinkCard.astro';
+import Base from '~/layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { SITE, SOCIALS, type Locale } from '~/consts';
+import { useTranslations } from '~/i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const links = (await getCollection('links')).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name),
+);
+
+const email = SOCIALS.find((s) => s.href.startsWith('mailto:'));
+
+/** What a friend should send me — mirrors the fields in links.yaml. */
+const fields =
+  lang === 'zh'
+    ? ['名称', '网址', '头像（可选）', '一句话简介（中英各一句最好）']
+    : ['Name', 'URL', 'Avatar (optional)', 'One-line description'];
+---
+
+<Base title={t('links.title')} description={t('links.subtitle')} lang={lang}>
+  <div class="page">
+    <header>
+      <p class="eyebrow">{t('nav.links')}</p>
+
+      <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+        {t('links.title')}
+      </h1>
+
+      <p class="mt-3 max-w-prose text-ink-dim">{t('links.subtitle')}</p>
+    </header>
+
+    {
+      links.length > 0 ? (
+        <div class="mt-10 grid gap-4 sm:grid-cols-2">
+          {links.map((link) => (
+            <LinkCard link={link} lang={lang} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-12 text-ink-faint">{t('links.empty')}</p>
+      )
+    }
+
+    <section class="card-surface mt-14 p-6 sm:p-8">
+      <h2 class="font-[family-name:var(--font-display)] text-xl font-semibold">
+        {t('links.exchange')}
+      </h2>
+
+      <p class="mt-3 max-w-prose text-sm leading-relaxed text-ink-dim">
+        {t('links.exchangeBody')}
+      </p>
+
+      <ul class="mt-4 flex flex-wrap gap-1.5">
+        {
+          fields.map((field) => (
+            <li class="rounded-full border border-line px-2.5 py-0.5 text-xs text-ink-faint">
+              {field}
+            </li>
+          ))
+        }
+      </ul>
+
+      <dl class="mt-6 grid gap-2 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-6">
+        <dt class="text-ink-faint">{SITE.author}</dt>
+        <dd class="font-[family-name:var(--font-mono)] text-ink-dim">{SITE.url}</dd>
+
+        {
+          email && (
+            <>
+              <dt class="text-ink-faint">{email.label}</dt>
+              <dd>
+                <a
+                  href={email.href}
+                  class="link-beacon inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-accent"
+                >
+                  {email.href.replace('mailto:', '')}
+                  <Icon name="external" size={12} />
+                </a>
+              </dd>
+            </>
+          )
+        }
+      </dl>
+    </section>
+
+    <div class="mt-20 flex justify-center">
+      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+    </div>
+  </div>
+</Base>

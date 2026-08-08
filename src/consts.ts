@@ -1,3 +1,5 @@
+import type { IconName } from '~/components/icons';
+
 /**
  * Site-wide constants. Anything here is safe to edit without touching layout code.
  * TODO(skr): replace the placeholder handles below with your real accounts.
@@ -32,8 +34,8 @@ export type SocialLink = {
   id: string;
   label: string;
   href: string;
-  /** Key in the icon sprite (see src/components/Icon.astro). */
-  icon: string;
+  /** Key in the icon set (see src/components/icons.ts). */
+  icon: IconName;
 };
 
 export const SOCIALS: SocialLink[] = [

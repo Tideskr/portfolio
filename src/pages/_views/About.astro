@@ -1,0 +1,155 @@
+---
+/**
+ * About. Unlike blog posts, this page *is* chrome — it gets a real translation
+ * rather than a language badge. The prose lives here instead of in i18n/ui.ts
+ * because that dictionary is for short strings reused across pages, and
+ * paragraphs there would drown the keys that are.
+ */
+import { Image } from 'astro:assets';
+import CompassRose from '~/components/CompassRose.astro';
+import Icon from '~/components/Icon.astro';
+import TideRule from '~/components/TideRule.astro';
+import Base from '~/layouts/Base.astro';
+import avatar from '~/assets/avatar.png';
+import { SITE, SOCIALS, type Locale } from '~/consts';
+import { useTranslations } from '~/i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const copy = {
+  en: {
+    lede: '“Skr” is short for seeker. I build small, well-made software and write down what the building taught me.',
+    body: [
+      'I work mostly on the parts of a system nobody demos: the build, the routing, the thing that decides what a page costs to load. It is unglamorous and it is where most of the quality lives.',
+      'My taste runs to tools that do one job, formats that outlive their readers, and interfaces that stay legible when the network is bad. I would rather ship something small that still works in five years than something impressive that needs a rewrite in one.',
+      'Away from the keyboard I read charts and old navigation manuals, which is where the compass on this site comes from.',
+    ],
+    nowTitle: 'What I am on right now',
+    now: [
+      'Rebuilding this site by hand, one component at a time.',
+      'A repository-reading CLI that prints the map a README never has.',
+      'Reading about pre-GPS ocean navigation, mostly for the vocabulary.',
+    ],
+    colophonTitle: 'Colophon',
+    colophon:
+      'Astro with static output, Tailwind for the token layer, and no client framework. The type is Fraunces over Inter; Chinese uses whatever the reader’s system provides, because shipping a CJK webfont costs more than it is worth. Most pages send no JavaScript at all — the exceptions are the theme toggle and the mobile menu. Built by hand, no template. Deployed from CI to a small server behind nginx.',
+    contactTitle: 'Say hello',
+    contactBody: 'Email is best, and I answer it. The other places are where I lurk.',
+  },
+  zh: {
+    lede: '「Skr」取自 seeker。我做一些小而讲究的软件，并把过程里学到的东西写下来。',
+    body: [
+      '我的活儿大多在没人会拿来演示的地方：构建、路由，以及决定一个页面加载要付出多少代价的那一层。它不好看，但质量基本都藏在这里。',
+      '我偏爱只做一件事的工具、能活得比读者更久的格式，以及网络很差时依然读得清的界面。与其做一个惊艳但一年后要重写的东西，我更想做一个五年后还能跑的小东西。',
+      '离开键盘的时候我读海图和旧的航海手册——这个站点上的罗盘就是从那儿来的。',
+    ],
+    nowTitle: '最近在做',
+    now: [
+      '一个组件一个组件地手写这个站点。',
+      '一个读仓库的命令行工具，打印出 README 从来没有的那张地图。',
+      '读 GPS 之前的远洋导航，主要是为了那些词。',
+    ],
+    colophonTitle: '关于本站',
+    colophon:
+      'Astro 静态输出，Tailwind 负责设计令牌层，没有客户端框架。西文用 Fraunces 配 Inter；中文交给读者系统里已有的字体，因为为 CJK 打包一份 webfont 的代价远大于收益。大部分页面不发送任何 JavaScript，例外只有主题切换和移动端菜单。手写设计，未套模板。由 CI 部署到一台小服务器，前面是 nginx。',
+    contactTitle: '打个招呼',
+    contactBody: '邮件最好，我会回。其他几个地方是我潜水的场所。',
+  },
+}[lang];
+
+const socials = SOCIALS.filter((s) => s.id !== 'rss');
+---
+
+<Base title={t('about.title')} description={t('about.subtitle')} lang={lang}>
+  <div class="page">
+    <header class="flex flex-col gap-8 sm:flex-row sm:items-center">
+      <Image
+        src={avatar}
+        alt={lang === 'zh' ? 'TideSkr 的头像' : "TideSkr's avatar"}
+        width={224}
+        height={224}
+        widths={[112, 160, 224]}
+        sizes="7rem"
+        class="size-28 shrink-0 rounded-full border border-line object-cover shadow-[var(--shadow-lift)]"
+      />
+
+      <div>
+        <p class="eyebrow">{t('nav.about')}</p>
+
+        <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+          {SITE.author}
+        </h1>
+
+        <p class="mt-3 max-w-prose text-lg leading-relaxed text-ink-dim text-pretty">
+          {copy.lede}
+        </p>
+      </div>
+    </header>
+
+    <TideRule class="mt-12" glyph />
+
+    <div class="mt-12 max-w-prose space-y-5 leading-relaxed text-ink-dim">
+      {copy.body.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+
+    <section class="mt-16">
+      <h2 class="font-[family-name:var(--font-display)] text-xl font-semibold">
+        {copy.nowTitle}
+      </h2>
+
+      <ul class="mt-5 max-w-prose space-y-3">
+        {
+          copy.now.map((item) => (
+            <li class="flex gap-3 text-ink-dim">
+              <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-beacon-fg" aria-hidden="true" />
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="font-[family-name:var(--font-display)] text-xl font-semibold">
+        {copy.contactTitle}
+      </h2>
+
+      <p class="mt-3 max-w-prose text-ink-dim">{copy.contactBody}</p>
+
+      <ul class="mt-6 flex flex-wrap gap-2.5">
+        {
+          socials.map((social) => (
+            <li>
+              <a
+                href={social.href}
+                target={social.href.startsWith('http') ? '_blank' : undefined}
+                rel={social.href.startsWith('http') ? 'me noopener noreferrer' : 'me'}
+                class="card-surface inline-flex items-center gap-2 px-3.5 py-2 text-sm transition-[border-color,color] hover:border-line-strong hover:text-beacon-fg"
+              >
+                <Icon name={social.icon} size={15} />
+                {social.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="card-surface mt-16 p-6 sm:p-8">
+      <h2 class="font-[family-name:var(--font-display)] text-lg font-semibold text-brass-fg">
+        {copy.colophonTitle}
+      </h2>
+
+      <p class="mt-3 max-w-prose text-sm leading-relaxed text-ink-dim">{copy.colophon}</p>
+    </section>
+
+    <div class="mt-20 flex justify-center">
+      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+    </div>
+  </div>
+</Base>

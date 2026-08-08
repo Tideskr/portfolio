@@ -1,0 +1,76 @@
+---
+/**
+ * The project index. Two groups, because "still afloat" and "in the boneyard"
+ * are different reading modes — mixing them makes the live work look staler
+ * than it is.
+ */
+import { getCollection } from 'astro:content';
+import CompassRose from '~/components/CompassRose.astro';
+import ProjectCard from '~/components/ProjectCard.astro';
+import TideRule from '~/components/TideRule.astro';
+import Base from '~/layouts/Base.astro';
+import type { Locale } from '~/consts';
+import { useTranslations } from '~/i18n/ui';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const all = (await getCollection('projects')).sort(
+  (a, b) => b.data.year - a.data.year || a.data.title.en.localeCompare(b.data.title.en),
+);
+
+const active = all.filter((p) => !p.data.archived);
+const archived = all.filter((p) => p.data.archived);
+---
+
+<Base title={t('projects.title')} description={t('projects.subtitle')} lang={lang}>
+  <div class="page">
+    <header>
+      <p class="eyebrow">{t('nav.projects')}</p>
+
+      <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+        {t('projects.title')}
+      </h1>
+
+      <p class="mt-3 max-w-prose text-ink-dim">{t('projects.subtitle')}</p>
+    </header>
+
+    {
+      active.length > 0 ? (
+        <div class="mt-10 grid gap-5 sm:grid-cols-2">
+          {active.map((project) => (
+            <ProjectCard project={project} lang={lang} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-12 text-ink-faint">{t('projects.empty')}</p>
+      )
+    }
+
+    {
+      archived.length > 0 && (
+        <section class="mt-16">
+          <TideRule />
+
+          <h2 class="mt-10 font-[family-name:var(--font-display)] text-xl font-semibold text-ink-dim">
+            {t('projects.archived')}
+          </h2>
+
+          <div class="mt-6 grid gap-5 opacity-75 transition-opacity hover:opacity-100 sm:grid-cols-2">
+            {archived.map((project) => (
+              <ProjectCard project={project} lang={lang} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <div class="mt-20 flex justify-center">
+      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+    </div>
+  </div>
+</Base>

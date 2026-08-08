@@ -219,7 +219,7 @@ const intro = t('home.intro').replace(/\*([^*]+)\*/g, '<em class="text-brass-fg 
               target={s.href.startsWith('http') ? '_blank' : undefined}
               class="card-surface inline-flex items-center gap-2.5 px-4 py-2 text-sm text-ink-dim transition-[border-color,color] duration-200 hover:border-line-strong hover:text-beacon-fg"
             >
-              <Icon name={s.icon as 'github'} size={16} />
+              <Icon name={s.icon} size={16} />
               {s.label}
             </a>
           </li>

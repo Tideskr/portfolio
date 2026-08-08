@@ -7,9 +7,12 @@ interface Props {
 }
 
 const { link, lang } = Astro.props;
-const avatar = link.data.avatar
-  ? new URL(link.data.avatar, Astro.site).href
-  : null;
+
+// A local avatar stays root-relative — resolving it against `Astro.site` would
+// make the dev server fetch the image from production.
+const avatar = link.data.avatar ?? null;
+const isRemoteAvatar = /^https?:\/\//.test(avatar ?? '');
+const host = new URL(link.data.url).host;
 ---
 
 <a
@@ -26,6 +29,8 @@ const avatar = link.data.avatar
         width={44}
         height={44}
         loading="lazy"
+        decoding="async"
+        referrerpolicy={isRemoteAvatar ? 'no-referrer' : undefined}
         class="size-11 shrink-0 rounded-full border border-line bg-card object-cover"
       />
     ) : (
@@ -44,7 +49,7 @@ const avatar = link.data.avatar
         {link.data.name}
       </span>
       <span class="truncate font-[family-name:var(--font-mono)] text-xs text-ink-faint">
-        {link.data.url.replace(/^https?:\/\//, '')}
+        {host}
       </span>
     </span>
     <span class="mt-0.5 block line-clamp-2 text-sm text-ink-dim">
