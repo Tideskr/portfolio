@@ -2,7 +2,7 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import Icon from './Icon.astro';
 import { formatDate, useTranslations } from '~/i18n/ui';
-import { readingTime, tagSlug, type Post } from '~/lib/posts';
+import { readingTime, tagHref, type Post } from '~/lib/posts';
 import type { Locale } from '~/consts';
 
 interface Props {
@@ -74,7 +74,7 @@ const foreign = post.data.lang !== lang;
         {post.data.tags.map((tag) => (
           <li>
             <a
-              href={getRelativeLocaleUrl(lang, `/blog/tags/${tagSlug(tag)}`)}
+              href={getRelativeLocaleUrl(lang, `/blog/tags/${tagHref(tag)}`)}
               class="inline-block rounded-full border border-line px-2.5 py-0.5 text-xs text-ink-faint transition-colors hover:border-line-strong hover:text-beacon-fg"
             >
               {tag}

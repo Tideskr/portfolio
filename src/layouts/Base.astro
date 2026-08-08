@@ -2,7 +2,7 @@
 import '~/styles/global.css';
 import Footer from '~/components/Footer.astro';
 import Header from '~/components/Header.astro';
-import { asLocale, switchLocalePath, useTranslations } from '~/i18n/ui';
+import { asLocale, canonicalPath, switchLocalePath, useTranslations } from '~/i18n/ui';
 import { HTML_LANG, LOCALES, OG_LOCALE, SITE, type Locale } from '~/consts';
 
 interface Props {
@@ -40,7 +40,7 @@ const {
 
 const t = useTranslations(lang);
 
-const pathname = Astro.url.pathname;
+const pathname = canonicalPath(Astro.url.pathname);
 const basePath = switchLocalePath(pathname, 'en');
 
 const canonicalURL = new URL(canonical ?? pathname, SITE.url).href;

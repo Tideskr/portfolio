@@ -52,6 +52,39 @@ export function readingTime(body: string | undefined): number {
   return Math.max(1, Math.round(cjk / 340 + latin / 220));
 }
 
+/**
+ * The path segment for a tag. Left *decoded* on purpose: Astro percent-encodes
+ * `params` itself when it writes the route, and encoding here would double up
+ * (`设计` → `%25E8%25...`). Use `tagHref` when you need it inside an `href`.
+ */
 export function tagSlug(tag: string): string {
-  return encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'));
+  return tag.toLowerCase().replace(/\s+/g, '-');
+}
+
+/** The same slug, encoded for use in an anchor. */
+export function tagHref(tag: string): string {
+  return encodeURIComponent(tagSlug(tag));
+}
+
+/**
+ * Static paths for the post routes. Every post is emitted under both locales;
+ * the language-matched copy is canonical and the mirror is `noindex` (see
+ * Post.astro), so readers never get bounced out of their locale.
+ */
+export async function postPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, ...neighbours(posts, post.id) },
+  }));
+}
+
+/** Static paths for the tag routes, one per distinct tag. */
+export async function tagPaths() {
+  const posts = await getPosts();
+  const tags = await getTags();
+  return tags.map(({ tag }) => ({
+    params: { tag: tagSlug(tag) },
+    props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
 }

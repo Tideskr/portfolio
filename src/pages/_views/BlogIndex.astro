@@ -1,0 +1,103 @@
+---
+/**
+ * The post listing. Shared by /blog and the tag pages — both show every post
+ * regardless of the language it was written in, with a badge on the ones that
+ * do not match the reader's chrome.
+ */
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Icon from '~/components/Icon.astro';
+import PostCard from '~/components/PostCard.astro';
+import Base from '~/layouts/Base.astro';
+import type { Locale } from '~/consts';
+import { useTranslations } from '~/i18n/ui';
+import { tagHref, type Post } from '~/lib/posts';
+
+interface Props {
+  lang: Locale;
+  posts: Post[];
+  tags: { tag: string; count: number }[];
+  /** Set on a tag page; the heading and title change accordingly. */
+  activeTag?: string;
+}
+
+const { lang, posts, tags, activeTag } = Astro.props;
+const t = useTranslations(lang);
+
+const title = activeTag ? `${t('blog.taggedWith')}: ${activeTag}` : t('blog.title');
+const count = `${posts.length} ${posts.length === 1 ? t('blog.postCountOne') : t('blog.postCount')}`;
+---
+
+<Base title={title} description={activeTag ? `${t('blog.taggedWith')} ${activeTag}` : t('blog.subtitle')} lang={lang}>
+  <div class="page">
+    <header>
+      <p class="eyebrow">{t('blog.title')}</p>
+
+      <h1
+        class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl"
+      >
+        {title}
+      </h1>
+
+      <p class="mt-3 max-w-prose text-ink-dim">{t('blog.subtitle')}</p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-faint">
+        <span>{count}</span>
+
+        <a
+          href="/rss.xml"
+          class="link-beacon inline-flex items-center gap-1.5 hover:text-beacon-fg"
+        >
+          <Icon name="rss" size={12} />
+          {t('footer.rss')}
+        </a>
+      </div>
+    </header>
+
+    {
+      tags.length > 0 && (
+        <nav class="mt-8 flex flex-wrap items-center gap-2" aria-label={t('blog.allTags')}>
+          <a
+            href={getRelativeLocaleUrl(lang, '/blog')}
+            aria-current={activeTag ? undefined : 'page'}
+            class:list={[
+              'rounded-full border px-3 py-1 text-xs transition-colors',
+              activeTag
+                ? 'border-line text-ink-faint hover:border-line-strong hover:text-ink-dim'
+                : 'border-beacon-fg/50 text-beacon-fg',
+            ]}
+          >
+            {t('blog.allTags')}
+          </a>
+
+          {tags.map(({ tag, count: n }) => (
+            <a
+              href={getRelativeLocaleUrl(lang, `/blog/tags/${tagHref(tag)}`)}
+              aria-current={tag === activeTag ? 'page' : undefined}
+              class:list={[
+                'rounded-full border px-3 py-1 text-xs transition-colors',
+                tag === activeTag
+                  ? 'border-beacon-fg/50 text-beacon-fg'
+                  : 'border-line text-ink-faint hover:border-line-strong hover:text-ink-dim',
+              ]}
+            >
+              {tag}
+              <span class="ml-1.5 font-[family-name:var(--font-mono)] opacity-60">{n}</span>
+            </a>
+          ))}
+        </nav>
+      )
+    }
+
+    {
+      posts.length > 0 ? (
+        <div class="mt-10 grid gap-5 sm:grid-cols-2">
+          {posts.map((post) => (
+            <PostCard post={post} lang={lang} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-12 text-ink-faint">{t('blog.empty')}</p>
+      )
+    }
+  </div>
+</Base>

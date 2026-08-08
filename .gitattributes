@@ -1,0 +1,9 @@
+# Normalise line endings: LF in the repository, native in the working tree.
+# Keeps the Windows checkout and the Linux CI runner byte-identical.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.avif binary
+*.webp binary
+*.woff2 binary

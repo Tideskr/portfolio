@@ -1,0 +1,187 @@
+---
+/**
+ * Reading view for a single post.
+ *
+ * A post exists under both locales (`/blog/<slug>` and `/zh/blog/<slug>`) with
+ * the same prose and translated chrome. The copy in the post's own language is
+ * canonical; the mirror carries `noindex` so the two never compete in search.
+ */
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { Image } from 'astro:assets';
+import CompassRose from '~/components/CompassRose.astro';
+import Icon from '~/components/Icon.astro';
+import TideRule from '~/components/TideRule.astro';
+import Base from './Base.astro';
+import type { Locale } from '~/consts';
+import { formatDate, useTranslations } from '~/i18n/ui';
+import { readingTime, tagHref, type Post } from '~/lib/posts';
+
+interface Props {
+  post: Post;
+  lang: Locale;
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, lang, newer, older } = Astro.props;
+const t = useTranslations(lang);
+
+const { title, description, pubDate, updatedDate, tags, cover, coverAlt } = post.data;
+const postLang = post.data.lang;
+const bodyLang = postLang === 'zh' ? 'zh-Hans' : 'en';
+const minutes = readingTime(post.body);
+
+// The canonical copy is the one whose chrome matches the prose.
+const canonical = getRelativeLocaleUrl(postLang, `/blog/${post.id}`);
+const isMirror = postLang !== lang;
+---
+
+<Base
+  title={title}
+  description={description}
+  lang={lang}
+  ogType="article"
+  publishedTime={pubDate}
+  modifiedTime={updatedDate}
+  canonical={canonical}
+  noindex={isMirror}
+>
+  <article class="page">
+    <header class="mx-auto max-w-prose">
+      <a
+        href={getRelativeLocaleUrl(lang, '/blog')}
+        class="link-beacon inline-flex items-center gap-1.5 text-sm text-ink-faint hover:text-ink-dim"
+      >
+        <Icon name="arrowRight" size={13} class="rotate-180" />
+        {t('blog.backToBlog')}
+      </a>
+
+      <h1
+        class="mt-6 font-[family-name:var(--font-display)] text-3xl leading-[1.18] font-semibold text-balance sm:text-[2.6rem]"
+        lang={bodyLang}
+      >
+        {title}
+      </h1>
+
+      <p class="mt-4 text-lg leading-relaxed text-ink-dim text-pretty" lang={bodyLang}>
+        {description}
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-faint">
+        <time datetime={pubDate.toISOString()} class="inline-flex items-center gap-1.5">
+          <Icon name="calendar" size={12} />
+          {t('blog.published')} {formatDate(pubDate, lang)}
+        </time>
+
+        {
+          updatedDate && (
+            <time datetime={updatedDate.toISOString()}>
+              {t('blog.updated')} {formatDate(updatedDate, lang)}
+            </time>
+          )
+        }
+
+        <span class="inline-flex items-center gap-1.5">
+          <Icon name="clock" size={12} />
+          {minutes} {t('blog.readingTime')}
+        </span>
+
+        {
+          isMirror && (
+            <span class="inline-flex items-center gap-1.5 rounded border border-line px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-brass-fg">
+              {t('blog.writtenIn')}: {postLang === 'zh' ? t('blog.langZh') : t('blog.langEn')}
+            </span>
+          )
+        }
+      </div>
+
+      {
+        tags.length > 0 && (
+          <ul class="mt-5 flex flex-wrap gap-1.5" aria-label={t('blog.tags')}>
+            {tags.map((tag) => (
+              <li>
+                <a
+                  href={getRelativeLocaleUrl(lang, `/blog/tags/${tagHref(tag)}`)}
+                  class="inline-block rounded-full border border-line px-2.5 py-0.5 text-xs text-ink-faint transition-colors hover:border-line-strong hover:text-beacon-fg"
+                >
+                  {tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      <TideRule class="mt-10" glyph />
+    </header>
+
+    {
+      cover && (
+        <Image
+          src={cover}
+          alt={coverAlt ?? ''}
+          widths={[640, 960, 1280]}
+          sizes="(min-width: 68rem) 60rem, 100vw"
+          class="mx-auto mt-10 w-full max-w-4xl rounded-xl border border-line"
+        />
+      )
+    }
+
+    <div class="prose mx-auto mt-12" lang={bodyLang}>
+      <slot />
+    </div>
+
+    <TideRule class="mx-auto mt-16 max-w-prose" />
+
+    {
+      (newer || older) && (
+        <nav
+          class="mx-auto mt-8 grid max-w-prose gap-4 sm:grid-cols-2"
+          aria-label={`${t('blog.prev')} / ${t('blog.next')}`}
+        >
+          {older ? (
+            <a
+              href={getRelativeLocaleUrl(lang, `/blog/${older.id}`)}
+              class="card-surface group p-4 hover:border-line-strong hover:bg-card-hover"
+            >
+              <span class="flex items-center gap-1.5 text-xs text-ink-faint">
+                <Icon name="arrowRight" size={12} class="rotate-180" />
+                {t('blog.prev')}
+              </span>
+              <span
+                class="mt-1.5 block text-sm font-medium group-hover:text-beacon-fg"
+                lang={older.data.lang === 'zh' ? 'zh-Hans' : 'en'}
+              >
+                {older.data.title}
+              </span>
+            </a>
+          ) : (
+            <span />
+          )}
+
+          {newer && (
+            <a
+              href={getRelativeLocaleUrl(lang, `/blog/${newer.id}`)}
+              class="card-surface group p-4 text-right hover:border-line-strong hover:bg-card-hover"
+            >
+              <span class="flex items-center justify-end gap-1.5 text-xs text-ink-faint">
+                {t('blog.next')}
+                <Icon name="arrowRight" size={12} />
+              </span>
+              <span
+                class="mt-1.5 block text-sm font-medium group-hover:text-beacon-fg"
+                lang={newer.data.lang === 'zh' ? 'zh-Hans' : 'en'}
+              >
+                {newer.data.title}
+              </span>
+            </a>
+          )}
+        </nav>
+      )
+    }
+
+    <div class="mt-16 flex justify-center">
+      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+    </div>
+  </article>
+</Base>

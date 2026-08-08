@@ -1,0 +1,9 @@
+---
+import BlogIndex from '../../_views/BlogIndex.astro';
+import { getPosts, getTags } from '~/lib/posts';
+
+const posts = await getPosts();
+const tags = await getTags();
+---
+
+<BlogIndex lang="zh" posts={posts} tags={tags} />

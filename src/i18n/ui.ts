@@ -184,6 +184,19 @@ export function useTranslations(lang: Locale) {
 }
 
 /**
+ * The public shape of a path, matching `trailingSlash: 'never'`.
+ *
+ * With `build.format: 'file'` the build-time `Astro.url.pathname` carries the
+ * on-disk extension (`/blog.html`), which must not reach a canonical, an
+ * hreflang, or a link. In dev the pathname is already clean, so this is a
+ * no-op there.
+ */
+export function canonicalPath(pathname: string): string {
+  const clean = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
+  return clean.length > 1 ? clean.replace(/\/$/, '') : '/';
+}
+
+/**
  * Map the current pathname onto the other locale, keeping the reader on the
  * same page instead of bouncing them to the homepage.
  */

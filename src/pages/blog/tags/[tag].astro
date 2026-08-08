@@ -1,0 +1,16 @@
+---
+import BlogIndex from '../../_views/BlogIndex.astro';
+import { getTags, tagPaths, type Post } from '~/lib/posts';
+
+export const getStaticPaths = tagPaths;
+
+interface Props {
+  tag: string;
+  posts: Post[];
+}
+
+const { tag, posts } = Astro.props;
+const tags = await getTags();
+---
+
+<BlogIndex lang="en" posts={posts} tags={tags} activeTag={tag} />
