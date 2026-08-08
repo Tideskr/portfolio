@@ -1,0 +1,230 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import avatar from '~/assets/avatar.png';
+import CompassRose from '~/components/CompassRose.astro';
+import Icon from '~/components/Icon.astro';
+import PostCard from '~/components/PostCard.astro';
+import ProjectCard from '~/components/ProjectCard.astro';
+import Base from '~/layouts/Base.astro';
+import { SITE, SOCIALS, type Locale } from '~/consts';
+import { useTranslations } from '~/i18n/ui';
+import { getPosts } from '~/lib/posts';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const projects = (await getCollection('projects'))
+  .filter((p) => p.data.featured && !p.data.archived)
+  .sort((a, b) => b.data.year - a.data.year)
+  .slice(0, 2);
+
+const posts = (await getPosts()).slice(0, 3);
+
+// rss.xml sits at the site root and is not localised.
+const socials = SOCIALS.map((s) => ({
+  ...s,
+  href: s.href.startsWith('/') && s.href !== '/rss.xml' ? getRelativeLocaleUrl(lang, s.href) : s.href,
+}));
+
+/** The intro copy carries one `*emphasis*` span; the source is our own dictionary. */
+const intro = t('home.intro').replace(/\*([^*]+)\*/g, '<em class="text-brass-fg not-italic">$1</em>');
+---
+
+<Base title={SITE.author} description={t('home.tagline')} lang={lang} bleed>
+  {/* ── Horizon hero ────────────────────────────────────────────────── */}
+  <section class="relative flex min-h-[88svh] flex-col overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 bg-[linear-gradient(180deg,var(--canvas)_0%,var(--canvas-2)_44%,color-mix(in_oklab,var(--color-tide)_38%,var(--canvas-2))_84%,color-mix(in_oklab,var(--color-tide)_58%,var(--canvas))_100%)]"
+    >
+    </div>
+
+    <div aria-hidden="true" class="starfield"></div>
+
+    {/* The lighthouse: one very slow turn of warm light across the horizon. */}
+    <div
+      aria-hidden="true"
+      style="opacity: var(--horizon-glow)"
+      class="beacon-sweep absolute -inset-x-1/4 bottom-0 h-72 blur-xl bg-[conic-gradient(from_140deg_at_50%_100%,transparent_0deg,color-mix(in_oklab,var(--beacon)_38%,transparent)_28deg,transparent_62deg,transparent_186deg,color-mix(in_oklab,var(--beacon)_22%,transparent)_212deg,transparent_244deg)]"
+    >
+    </div>
+
+    <CompassRose
+      size={640}
+      letters
+      class="pointer-events-none absolute top-1/2 -right-56 -translate-y-1/2 text-brass-fg opacity-[0.055] select-none md:-right-40"
+    />
+
+    <div class="page relative flex flex-1 items-center py-20 md:py-24">
+      <div class="grid w-full items-center gap-12 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
+        <div class="rise max-w-xl">
+          <p class="eyebrow">{t('home.kicker')}</p>
+
+          <h1
+            class="mt-6 font-[family-name:var(--font-display)] text-[2.35rem] leading-[1.14] font-semibold text-pretty sm:text-5xl md:text-[3.3rem]"
+          >
+            {t('home.role')}
+          </h1>
+
+          <p class="mt-6 text-lg leading-relaxed text-ink-dim text-pretty">{t('home.tagline')}</p>
+
+          <p
+            class="mt-6 border-l border-brass-fg/50 pl-4 text-sm leading-relaxed text-ink-faint"
+            set:html={intro}
+          />
+
+          <div class="mt-9 flex flex-wrap items-center gap-3">
+            <a
+              href={getRelativeLocaleUrl(lang, '/blog')}
+              class="inline-flex items-center gap-2 rounded-full border border-line-strong bg-card px-5 py-2.5 text-sm font-medium transition-[border-color,color,transform] duration-200 ease-[var(--ease-tide)] hover:-translate-y-0.5 hover:border-beacon-fg/60 hover:text-beacon-fg"
+            >
+              {t('home.cta.read')}
+              <Icon name="arrowRight" size={14} />
+            </a>
+
+            <a
+              href={getRelativeLocaleUrl(lang, '/projects')}
+              class="link-beacon inline-flex items-center gap-2 px-1 py-2.5 text-sm font-medium text-ink-dim transition-colors duration-200 hover:text-ink"
+            >
+              {t('home.cta.work')}
+            </a>
+          </div>
+        </div>
+
+        <div class="rise relative mx-auto md:mx-0">
+          <div
+            aria-hidden="true"
+            class="absolute -inset-8 rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--beacon)_16%,transparent),transparent_72%)] blur-2xl"
+          >
+          </div>
+
+          <Image
+            src={avatar}
+            alt={
+              lang === 'zh'
+                ? 'TideSkr 的头像：暮色海面上的一枚黄铜罗盘，地平线尽头有一座灯塔'
+                : "TideSkr's avatar: a brass compass over a dusk sea, a lighthouse on the horizon"
+            }
+            width={576}
+            height={576}
+            widths={[224, 320, 576]}
+            sizes="(min-width: 768px) 18rem, 14rem"
+            loading="eager"
+            fetchpriority="high"
+            class="relative size-56 rounded-full border border-line object-cover shadow-[var(--shadow-lift)] sm:size-64 md:size-72"
+          />
+
+          <span
+            class="absolute right-0 bottom-1 grid size-12 place-items-center rounded-full border border-line bg-card text-brass-fg shadow-[var(--shadow-lift)]"
+            aria-hidden="true"
+          >
+            <CompassRose size={26} ring={false} />
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      aria-hidden="true"
+      class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-beacon-fg/70 to-transparent"
+    >
+    </div>
+  </section>
+
+  {/* ── Selected work ───────────────────────────────────────────────── */}
+  <section class="page mt-20 md:mt-28">
+    <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+      <div>
+        <p class="eyebrow">{t('home.eyebrowWork')}</p>
+        <h2
+          class="mt-3 font-[family-name:var(--font-display)] text-2xl font-semibold sm:text-3xl"
+        >
+          {t('home.featured')}
+        </h2>
+      </div>
+
+      <a
+        href={getRelativeLocaleUrl(lang, '/projects')}
+        class="link-beacon inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
+      >
+        {t('home.viewAllProjects')}
+        <Icon name="arrowRight" size={14} />
+      </a>
+    </div>
+
+    {
+      projects.length > 0 ? (
+        <div class="mt-8 grid gap-5 md:grid-cols-2">
+          {projects.map((project) => (
+            <ProjectCard project={project} lang={lang} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-8 text-sm text-ink-faint">{t('projects.empty')}</p>
+      )
+    }
+  </section>
+
+  {/* ── Recent writing ──────────────────────────────────────────────── */}
+  <section class="page mt-20 md:mt-28">
+    <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+      <div>
+        <p class="eyebrow">{t('home.eyebrowLog')}</p>
+        <h2
+          class="mt-3 font-[family-name:var(--font-display)] text-2xl font-semibold sm:text-3xl"
+        >
+          {t('home.latest')}
+        </h2>
+      </div>
+
+      <a
+        href={getRelativeLocaleUrl(lang, '/blog')}
+        class="link-beacon inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
+      >
+        {t('home.viewAll')}
+        <Icon name="arrowRight" size={14} />
+      </a>
+    </div>
+
+    {
+      posts.length > 0 ? (
+        <div class="mt-8 grid gap-5 md:grid-cols-3">
+          {posts.map((post) => (
+            <PostCard post={post} lang={lang} showTags={false} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-8 text-sm text-ink-faint">{t('blog.empty')}</p>
+      )
+    }
+  </section>
+
+  {/* ── Elsewhere ───────────────────────────────────────────────────── */}
+  <section class="page mt-20 md:mt-28">
+    <p class="eyebrow">{t('home.elsewhere')}</p>
+
+    <ul class="mt-6 flex flex-wrap gap-3">
+      {
+        socials.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              rel={s.href.startsWith('http') ? 'me noopener' : undefined}
+              target={s.href.startsWith('http') ? '_blank' : undefined}
+              class="card-surface inline-flex items-center gap-2.5 px-4 py-2 text-sm text-ink-dim transition-[border-color,color] duration-200 hover:border-line-strong hover:text-beacon-fg"
+            >
+              <Icon name={s.icon as 'github'} size={16} />
+              {s.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

@@ -1,0 +1,54 @@
+---
+import { type CollectionEntry } from 'astro:content';
+
+interface Props {
+  link: CollectionEntry<'links'>;
+  lang: 'en' | 'zh';
+}
+
+const { link, lang } = Astro.props;
+const avatar = link.data.avatar
+  ? new URL(link.data.avatar, Astro.site).href
+  : null;
+---
+
+<a
+  href={link.data.url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="card-surface group flex items-center gap-4 p-4 transition-[border-color,background-color,transform] duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:bg-card-hover"
+>
+  {
+    avatar ? (
+      <img
+        src={avatar}
+        alt=""
+        width={44}
+        height={44}
+        loading="lazy"
+        class="size-11 shrink-0 rounded-full border border-line bg-card object-cover"
+      />
+    ) : (
+      <span
+        class="grid size-11 shrink-0 place-items-center rounded-full border border-line bg-card font-[family-name:var(--font-display)] text-sm font-semibold text-brass-fg"
+        aria-hidden="true"
+      >
+        {link.data.name.slice(0, 1)}
+      </span>
+    )
+  }
+
+  <span class="min-w-0">
+    <span class="flex items-center gap-2">
+      <span class="truncate text-sm font-medium group-hover:text-beacon-fg">
+        {link.data.name}
+      </span>
+      <span class="truncate font-[family-name:var(--font-mono)] text-xs text-ink-faint">
+        {link.data.url.replace(/^https?:\/\//, '')}
+      </span>
+    </span>
+    <span class="mt-0.5 block line-clamp-2 text-sm text-ink-dim">
+      {link.data.desc[lang]}
+    </span>
+  </span>
+</a>

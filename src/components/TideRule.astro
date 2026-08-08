@@ -1,0 +1,43 @@
+---
+/**
+ * A low-amplitude wave used in place of <hr> — the "tide" half of TideSkr.
+ * Optionally carries the compass rose as a centre glyph.
+ */
+import CompassRose from './CompassRose.astro';
+
+interface Props {
+  class?: string;
+  /** Put a small compass rose in the middle of the rule. */
+  glyph?: boolean;
+}
+
+const { class: className = '', glyph = false } = Astro.props;
+
+// One period of a sine-ish wave, repeated by preserveAspectRatio="none".
+const wave =
+  'M0 6 C 15 0, 30 12, 45 6 S 75 0, 90 6 S 120 12, 135 6 S 165 0, 180 6';
+---
+
+<div class:list={['flex items-center gap-4 text-brass-fg/45', className]} role="separator">
+  <svg
+    class="h-3 flex-1"
+    viewBox="0 0 180 12"
+    preserveAspectRatio="none"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path d={wave} stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" />
+  </svg>
+
+  {glyph && <CompassRose size={22} ring={false} class="shrink-0 text-brass-fg/70" />}
+
+  <svg
+    class="h-3 flex-1"
+    viewBox="0 0 180 12"
+    preserveAspectRatio="none"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path d={wave} stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" />
+  </svg>
+</div>

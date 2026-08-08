@@ -1,0 +1,56 @@
+# Projects shown on /projects and (when `featured`) on the homepage.
+# TODO(skr): these are placeholders — replace with your real work.
+# `accent` is a two-stop gradient used for the card's chip.
+
+- id: tideskr-moe
+  title:
+    en: skr.moe
+    zh: skr.moe
+  summary:
+    en: This site. A hand-drawn Astro build with a bilingual routing layer, zero client JS on most pages, and a compass rose for a mascot.
+    zh: 就是这个站点。手写的 Astro 项目，带双语路由层，大部分页面零客户端 JS，吉祥物是一枚罗盘。
+  year: 2026
+  stack: [Astro, TypeScript, Tailwind CSS, nginx]
+  repo: https://github.com/TideSkr/portfolio
+  url: https://skr.moe
+  featured: true
+  accent: ['#1e4fd8', '#f6b073']
+
+- id: driftwood
+  title:
+    en: Driftwood
+    zh: Driftwood
+  summary:
+    en: A tiny static-file server that reloads on change and does nothing else. Under 300 lines.
+    zh: 一个极小的静态文件服务器，改动即刷新，此外什么都不做。不到 300 行。
+  year: 2025
+  stack: [Go, HTTP/2]
+  repo: https://github.com/TideSkr/driftwood
+  featured: true
+  accent: ['#4c8dff', '#93a4c4']
+
+- id: sextant
+  title:
+    en: Sextant
+    zh: Sextant
+  summary:
+    en: CLI that reads a repository and prints the map I wish every README had — entry points, hot files, and who touches what.
+    zh: 一个命令行工具：读一个仓库，打印出我希望每份 README 都有的地图——入口、热点文件，以及谁在改什么。
+  year: 2025
+  stack: [Rust, tree-sitter]
+  repo: https://github.com/TideSkr/sextant
+  featured: true
+  accent: ['#c9b896', '#1e4fd8']
+
+- id: lighthouse-notes
+  title:
+    en: Lighthouse
+    zh: Lighthouse
+  summary:
+    en: Self-hosted read-later that strips a page to its text and keeps it forever. Retired in favour of plain Markdown files.
+    zh: 自建的稍后读服务，把页面剥到只剩正文并永久保存。后来改用纯 Markdown 文件，已归档。
+  year: 2024
+  stack: [Node.js, SQLite]
+  repo: https://github.com/TideSkr/lighthouse
+  archived: true
+  accent: ['#93a4c4', '#101f42']

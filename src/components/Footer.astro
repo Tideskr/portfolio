@@ -1,0 +1,96 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import CompassRose from './CompassRose.astro';
+import Icon from './Icon.astro';
+import TideRule from './TideRule.astro';
+import { useTranslations } from '~/i18n/ui';
+import { SITE, SOCIALS, type Locale } from '~/consts';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const year = new Date().getFullYear();
+const span = year > SITE.startYear ? `${SITE.startYear}–${year}` : `${SITE.startYear}`;
+
+const socials = SOCIALS.map((s) => ({
+  ...s,
+  // rss.xml sits at the site root and is not localised.
+  href: s.href.startsWith('/') && s.href !== '/rss.xml' ? getRelativeLocaleUrl(lang, s.href) : s.href,
+}));
+---
+
+<footer class="relative mt-24 overflow-hidden">
+  <CompassRose
+    size={420}
+    letters
+    class="pointer-events-none absolute -bottom-56 left-1/2 -translate-x-1/2 text-brass-fg opacity-[0.055] select-none"
+  />
+
+  <div class="page relative">
+    <TideRule glyph />
+
+    <div class="flex flex-col gap-6 py-10 sm:flex-row sm:items-start sm:justify-between">
+      <div class="space-y-1.5">
+        <p class="font-[family-name:var(--font-display)] text-base">
+          <span class="font-semibold">{SITE.author}</span>
+          <span class="text-ink-faint"> · {SITE.domain}</span>
+        </p>
+        <p class="text-sm text-ink-faint">{t('footer.builtWith')}</p>
+        <p class="text-xs text-ink-faint">© {span} {SITE.author}. {t('footer.rights')}</p>
+      </div>
+
+      <ul class="flex flex-wrap items-center gap-1">
+        {
+          socials.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                aria-label={s.label}
+                title={s.label}
+                rel={s.href.startsWith('http') ? 'me noopener' : undefined}
+                target={s.href.startsWith('http') ? '_blank' : undefined}
+                class="inline-flex size-9 items-center justify-center rounded-md text-ink-faint transition-colors duration-200 hover:bg-card hover:text-beacon-fg"
+              >
+                <Icon name={s.icon as 'github'} size={17} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <a
+    href="#top"
+    id="to-top"
+    aria-label={t('a11y.toTop')}
+    title={t('a11y.toTop')}
+    class="fixed right-5 bottom-5 z-40 inline-flex size-11 items-center justify-center rounded-full border border-line bg-card/85 text-brass-fg opacity-0 backdrop-blur-md transition-[opacity,transform] duration-300 ease-[var(--ease-tide)] data-[visible=true]:opacity-100 hover:text-beacon-fg"
+    data-visible="false"
+  >
+    <CompassRose size={22} ring={false} />
+    <span class="sr-only">{t('a11y.toTop')}</span>
+  </a>
+</footer>
+
+<script>
+  const btn = document.getElementById('to-top');
+  if (btn) {
+    const onScroll = () => {
+      btn.dataset.visible = String(window.scrollY > 600);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>
+
+<style>
+  #to-top[data-visible='false'] {
+    pointer-events: none;
+    transform: translateY(0.5rem);
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { NAV } from '~/consts';
+import { useTranslations, type UIKey } from '~/i18n/ui';
+import type { Locale } from '~/consts';
+
+interface Props {
+  lang: Locale;
+  /** Pathname with the locale prefix removed, e.g. `/blog/foo`. */
+  basePath: string;
+  layout?: 'row' | 'column';
+  onNavigate?: string;
+}
+
+const { lang, basePath, layout = 'row' } = Astro.props;
+const t = useTranslations(lang);
+
+function isCurrent(path: string) {
+  if (path === '/') return basePath === '/';
+  return basePath === path || basePath.startsWith(`${path}/`);
+}
+---
+
+<ul
+  class:list={[
+    'flex gap-1',
+    layout === 'row' ? 'items-center' : 'flex-col items-stretch gap-0.5',
+  ]}
+>
+  {
+    NAV.map((item) => {
+      const current = isCurrent(item.path);
+      return (
+        <li>
+          <a
+            href={getRelativeLocaleUrl(lang, item.path)}
+            aria-current={current ? 'page' : undefined}
+            class:list={[
+              'group relative block rounded-md px-3 py-2 text-sm transition-colors duration-200',
+              layout === 'column' && 'px-1 py-3 text-base',
+              current ? 'text-ink' : 'text-ink-dim hover:text-ink',
+            ]}
+          >
+            {t(item.key as UIKey)}
+            <span
+              class:list={[
+                'pointer-events-none absolute left-3 right-3 -bottom-px h-px origin-left bg-beacon-fg transition-transform duration-300 ease-[var(--ease-tide)]',
+                layout === 'column' && 'left-1 right-1 bottom-1',
+                current ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+              ]}
+              aria-hidden="true"
+            />
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>

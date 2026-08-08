@@ -1,0 +1,142 @@
+---
+import '~/styles/global.css';
+import Footer from '~/components/Footer.astro';
+import Header from '~/components/Header.astro';
+import { asLocale, switchLocalePath, useTranslations } from '~/i18n/ui';
+import { HTML_LANG, LOCALES, OG_LOCALE, SITE, type Locale } from '~/consts';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Overrides the locale derived from the URL (always passed explicitly by pages). */
+  lang?: Locale;
+  /** Absolute or root-relative image for OG/Twitter cards. */
+  image?: string;
+  /** `article` on blog posts, `website` everywhere else. */
+  ogType?: 'website' | 'article';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  /** Force a canonical other than the current URL (used by the mirrored post routes). */
+  canonical?: string;
+  noindex?: boolean;
+  /** Suppress the top padding when the page opens with a full-bleed hero. */
+  bleed?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  lang = asLocale(Astro.currentLocale),
+  image = '/og-default.png',
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+  canonical,
+  noindex = false,
+  bleed = false,
+  class: className = '',
+} = Astro.props;
+
+const t = useTranslations(lang);
+
+const pathname = Astro.url.pathname;
+const basePath = switchLocalePath(pathname, 'en');
+
+const canonicalURL = new URL(canonical ?? pathname, SITE.url).href;
+const imageURL = new URL(image, SITE.url).href;
+
+const fullTitle = title === SITE.author ? `${SITE.author} — ${SITE.domain}` : `${title} · ${SITE.author}`;
+
+const alternates = LOCALES.map((locale) => ({
+  hreflang: HTML_LANG[locale],
+  href: new URL(switchLocalePath(pathname, locale), SITE.url).href,
+}));
+---
+
+<!doctype html>
+<html lang={HTML_LANG[lang]} class:list={[lang === 'zh' && 'lang-zh']}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(basePath, SITE.url).href} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.domain} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:locale" content={OG_LOCALE[lang]} />
+    {
+      LOCALES.filter((l) => l !== lang).map((l) => (
+        <meta property="og:locale:alternate" content={OG_LOCALE[l]} />
+      ))
+    }
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#050b1a" />
+
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.author} — ${t('blog.title')}`}
+      href={new URL('/rss.xml', SITE.url).href}
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Applied before first paint so the theme never flashes. -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('skr-theme');
+          var light = stored
+            ? stored === 'light'
+            : window.matchMedia('(prefers-color-scheme: light)').matches;
+          if (light) {
+            document.documentElement.classList.add('light');
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', '#f4f7fd');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+
+  <body id="top" class="min-h-dvh">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:border focus:border-line focus:bg-card focus:px-4 focus:py-2 focus:text-sm"
+    >
+      {t('a11y.skip')}
+    </a>
+
+    <Header lang={lang} pathname={pathname} basePath={basePath} />
+
+    <main id="main" class:list={[!bleed && 'pt-12 md:pt-16', className]}>
+      <slot />
+    </main>
+
+    <Footer lang={lang} />
+  </body>
+</html>

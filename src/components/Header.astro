@@ -1,0 +1,121 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import CompassRose from './CompassRose.astro';
+import Icon from './Icon.astro';
+import LangSwitch from './LangSwitch.astro';
+import Nav from './Nav.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { useTranslations } from '~/i18n/ui';
+import { SITE, type Locale } from '~/consts';
+
+interface Props {
+  lang: Locale;
+  pathname: string;
+  basePath: string;
+}
+
+const { lang, pathname, basePath } = Astro.props;
+const t = useTranslations(lang);
+const home = getRelativeLocaleUrl(lang, '/');
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-300"
+  data-scrolled="false"
+>
+  <div class="page flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
+    <a
+      href={home}
+      class="group flex items-center gap-2.5"
+      aria-label={`${SITE.author} — ${t('nav.home')}`}
+    >
+      <CompassRose
+        size={26}
+        ring={false}
+        class="text-brass-fg transition-transform duration-700 ease-[var(--ease-tide)] group-hover:rotate-45"
+      />
+      <span class="font-[family-name:var(--font-display)] text-lg leading-none tracking-tight">
+        <span class="font-semibold">skr</span><span class="text-ink-faint">.moe</span>
+      </span>
+    </a>
+
+    <div class="flex items-center gap-2">
+      <nav aria-label={t('nav.menu')} class="hidden md:block">
+        <Nav lang={lang} basePath={basePath} />
+      </nav>
+
+      <div class="hidden h-5 w-px bg-line md:block"></div>
+
+      <LangSwitch lang={lang} pathname={pathname} />
+      <ThemeToggle lang={lang} />
+
+      <button
+        type="button"
+        id="menu-toggle"
+        class="inline-flex size-8 items-center justify-center rounded-md border border-line text-ink-dim transition-colors hover:border-line-strong hover:text-ink md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t('nav.menu')}
+      >
+        <Icon name="menu" size={16} class="menu-open-icon" />
+        <Icon name="close" size={16} class="menu-close-icon hidden" />
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="mobile-menu"
+    hidden
+    class="border-t border-line bg-canvas/95 backdrop-blur-xl md:hidden"
+  >
+    <nav aria-label={t('nav.menu')} class="page py-4">
+      <Nav lang={lang} basePath={basePath} layout="column" />
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Header gains a background only once the page has scrolled off the hero.
+  const header = document.getElementById('site-header');
+  if (header) {
+    const onScroll = () => {
+      header.dataset.scrolled = String(window.scrollY > 24);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  function setMenu(open: boolean) {
+    if (!toggle || !menu) return;
+    menu.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.menu-open-icon')?.classList.toggle('hidden', open);
+    toggle.querySelector('.menu-close-icon')?.classList.toggle('hidden', !open);
+  }
+
+  toggle?.addEventListener('click', () => setMenu(menu?.hidden ?? true));
+  menu?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setMenu(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.hidden) {
+      setMenu(false);
+      toggle?.focus();
+    }
+  });
+  window.matchMedia('(min-width: 48rem)').addEventListener('change', (e) => {
+    if (e.matches) setMenu(false);
+  });
+</script>
+
+<style>
+  #site-header[data-scrolled='true'] {
+    background-color: color-mix(in oklab, var(--canvas) 82%, transparent);
+    border-bottom-color: var(--line);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
+</style>

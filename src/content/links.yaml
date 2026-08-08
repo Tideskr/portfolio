@@ -1,0 +1,18 @@
+# Friends' sites shown on /links.
+# TODO(skr): replace with real exchanges. `avatar` may be a remote URL or a
+# path under /public.
+
+- id: astro
+  name: Astro
+  url: https://astro.build
+  avatar: https://astro.build/favicon.svg
+  desc:
+    en: The framework this site is built on. Ships HTML first and JavaScript only when asked.
+    zh: 这个站点所用的框架。先输出 HTML，只在你要求时才给 JavaScript。
+
+- id: example-friend
+  name: Example Friend
+  url: https://example.com
+  desc:
+    en: A placeholder entry — swap it for someone whose writing you actually return to.
+    zh: 占位条目——把它换成一个你真的会回访的人。

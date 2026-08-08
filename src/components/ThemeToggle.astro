@@ -1,0 +1,69 @@
+---
+import Icon from './Icon.astro';
+import { useTranslations } from '~/i18n/ui';
+import type { Locale } from '~/consts';
+
+interface Props {
+  lang: Locale;
+  class?: string;
+}
+
+const { lang, class: className = '' } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  aria-label={t('a11y.toggleTheme')}
+  title={t('a11y.toggleTheme')}
+  aria-pressed="false"
+  class:list={[
+    'inline-flex size-8 items-center justify-center rounded-md border border-line',
+    'text-ink-dim transition-colors duration-200 hover:border-line-strong hover:text-ink',
+    className,
+  ]}
+>
+  <Icon name="sun" size={15} class="hidden light:block" />
+  <Icon name="moon" size={15} class="block light:hidden" />
+</button>
+
+<script>
+  const STORAGE_KEY = 'skr-theme';
+  const root = document.documentElement;
+
+  function sync() {
+    const isLight = root.classList.contains('light');
+    document
+      .querySelectorAll<HTMLButtonElement>('#theme-toggle')
+      .forEach((b) => b.setAttribute('aria-pressed', String(isLight)));
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', isLight ? '#f4f7fd' : '#050b1a');
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = (event.target as HTMLElement | null)?.closest('#theme-toggle');
+    if (!target) return;
+    root.classList.toggle('light');
+    try {
+      localStorage.setItem(STORAGE_KEY, root.classList.contains('light') ? 'light' : 'dark');
+    } catch {
+      /* private mode — the toggle still works for this page view */
+    }
+    sync();
+  });
+
+  // Follow the OS only while the visitor has not made an explicit choice.
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+    try {
+      if (localStorage.getItem(STORAGE_KEY)) return;
+    } catch {
+      /* ignore */
+    }
+    root.classList.toggle('light', e.matches);
+    sync();
+  });
+
+  sync();
+</script>

@@ -1,0 +1,34 @@
+---
+import Icon from './Icon.astro';
+import { OTHER_LOCALE, switchLocalePath, useTranslations } from '~/i18n/ui';
+import { HTML_LANG, type Locale } from '~/consts';
+
+interface Props {
+  lang: Locale;
+  pathname: string;
+  class?: string;
+}
+
+const { lang, pathname, class: className = '' } = Astro.props;
+const other = OTHER_LOCALE[lang];
+const t = useTranslations(lang);
+const href = switchLocalePath(pathname, other);
+const shortLabel = other === 'zh' ? '中' : 'EN';
+---
+
+<a
+  href={href}
+  hreflang={HTML_LANG[other]}
+  lang={HTML_LANG[other]}
+  aria-label={t('a11y.switchLang')}
+  title={t('a11y.switchLang')}
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1.5',
+    'text-xs font-medium text-ink-dim transition-colors duration-200',
+    'hover:border-line-strong hover:text-ink',
+    className,
+  ]}
+>
+  <Icon name="globe" size={14} />
+  <span>{shortLabel}</span>
+</a>
