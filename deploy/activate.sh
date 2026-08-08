@@ -20,9 +20,18 @@ TARGET="$RELEASES/$SHA"
 # A release without an index is a failed upload, not something to point at.
 [ -f "$TARGET/index.html" ] || { echo "release has no index.html: $TARGET" >&2; exit 1; }
 
+# The CSP allows this release's inline scripts by hash, so it has to be
+# regenerated from the release being activated. Written before the swap: a
+# stale policy would block the new scripts for as long as it took to notice.
+python3 "$ROOT/gen-csp.py" "$TARGET" "$ROOT/shared/csp.caddy"
+
 ln -sfn "$TARGET" "$ROOT/current.tmp"
 mv -Tf "$ROOT/current.tmp" "$ROOT/current"
 echo "activated $SHA"
+
+# Pick up the new CSP snippet. A reload is graceful — in-flight requests finish
+# against the old config rather than being dropped.
+sudo -n systemctl reload caddy
 
 # Keep the last few releases so a rollback is a symlink away. Never delete the
 # one currently linked, even if it falls outside the window.

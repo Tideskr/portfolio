@@ -40,14 +40,16 @@ skr.moe {
 		Referrer-Policy "strict-origin-when-cross-origin"
 		X-Frame-Options "DENY"
 		Cross-Origin-Opener-Policy "same-origin"
-
-		# No third-party anything on this site, so the CSP can be strict.
-		# 'unsafe-inline' for style-src only: Astro inlines the critical CSS.
-		Content-Security-Policy "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
-
 		Permissions-Policy "geolocation=(), microphone=(), camera=()"
 		-Server
 	}
+
+	# Content-Security-Policy lives in its own file because every script this
+	# site ships is inline (Astro inlines small bundles; the theme script is
+	# `is:inline` so it beats first paint), and each is allowed by hash rather
+	# than by 'unsafe-inline'. activate.sh regenerates this from the release it
+	# is activating, so the hashes cannot drift from the served HTML.
+	import /srv/skr.moe/shared/csp.caddy
 
 	# Content-hashed assets: safe to cache forever.
 	@immutable path /_astro/*
