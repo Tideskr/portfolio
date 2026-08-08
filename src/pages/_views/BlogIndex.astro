@@ -23,11 +23,19 @@ interface Props {
 const { lang, posts, tags, activeTag } = Astro.props;
 const t = useTranslations(lang);
 
-const title = activeTag ? `${t('blog.taggedWith')}: ${activeTag}` : t('blog.title');
-const count = `${posts.length} ${posts.length === 1 ? t('blog.postCountOne') : t('blog.postCount')}`;
+const tagTitle = activeTag
+  ? lang === 'zh'
+    ? `标签：${activeTag}`
+    : `${t('blog.taggedWith')}: ${activeTag}`
+  : undefined;
+const title = tagTitle ?? t('blog.title');
+const count =
+  lang === 'zh'
+    ? `共 ${posts.length} ${posts.length === 1 ? t('blog.postCountOne') : t('blog.postCount')}`
+    : `${posts.length} ${posts.length === 1 ? t('blog.postCountOne') : t('blog.postCount')}`;
 ---
 
-<Base title={title} description={activeTag ? `${t('blog.taggedWith')} ${activeTag}` : t('blog.subtitle')} lang={lang}>
+<Base title={title} description={tagTitle ?? t('blog.subtitle')} lang={lang}>
   <div class="page">
     <header>
       <p class="eyebrow">{t('blog.title')}</p>

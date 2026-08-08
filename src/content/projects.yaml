@@ -8,7 +8,7 @@
     zh: skr.moe
   summary:
     en: This site. A hand-drawn Astro build with a bilingual routing layer, zero client JS on most pages, and a compass rose for a mascot.
-    zh: 就是这个站点。手写的 Astro 项目，带双语路由层，大部分页面零客户端 JS，吉祥物是一枚罗盘。
+    zh: 这个站点本身。用 Astro 手写，配了双语路由；大多数页面不需要客户端 JavaScript，站点里那枚罗盘是它的小小标记。
   year: 2026
   stack: [Astro, TypeScript, Tailwind CSS, nginx]
   repo: https://github.com/TideSkr/portfolio
@@ -22,7 +22,7 @@
     zh: Driftwood
   summary:
     en: A tiny static-file server that reloads on change and does nothing else. Under 300 lines.
-    zh: 一个极小的静态文件服务器，改动即刷新，此外什么都不做。不到 300 行。
+    zh: 一个小巧的静态文件服务器，文件一改就自动刷新，除此之外不添任何多余功能。整个实现不到 300 行。
   year: 2025
   stack: [Go, HTTP/2]
   repo: https://github.com/TideSkr/driftwood
@@ -35,7 +35,7 @@
     zh: Sextant
   summary:
     en: CLI that reads a repository and prints the map I wish every README had — entry points, hot files, and who touches what.
-    zh: 一个命令行工具：读一个仓库，打印出我希望每份 README 都有的地图——入口、热点文件，以及谁在改什么。
+    zh: 一个命令行工具，读取仓库后，给出一张 README 往往缺少的地图：从哪里进入、哪些文件最热，以及代码最近由谁改动。
   year: 2025
   stack: [Rust, tree-sitter]
   repo: https://github.com/TideSkr/sextant
@@ -48,7 +48,7 @@
     zh: Lighthouse
   summary:
     en: Self-hosted read-later that strips a page to its text and keeps it forever. Retired in favour of plain Markdown files.
-    zh: 自建的稍后读服务，把页面剥到只剩正文并永久保存。后来改用纯 Markdown 文件，已归档。
+    zh: 自托管的稍后阅读工具，把网页收拾成干净的正文并长期保存。后来发现纯 Markdown 更合适，于是把它归档了。
   year: 2024
   stack: [Node.js, SQLite]
   repo: https://github.com/TideSkr/lighthouse

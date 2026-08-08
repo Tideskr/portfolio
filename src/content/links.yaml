@@ -8,11 +8,11 @@
   avatar: https://astro.build/favicon.svg
   desc:
     en: The framework this site is built on. Ships HTML first and JavaScript only when asked.
-    zh: 这个站点所用的框架。先输出 HTML，只在你要求时才给 JavaScript。
+    zh: 本站的底层框架：先把 HTML 送到浏览器，只有确实需要时才加载 JavaScript。
 
 - id: example-friend
   name: Example Friend
   url: https://example.com
   desc:
     en: A placeholder entry — swap it for someone whose writing you actually return to.
-    zh: 占位条目——把它换成一个你真的会回访的人。
+    zh: 示例条目，等着换成一个你真正愿意反复阅读的人。
