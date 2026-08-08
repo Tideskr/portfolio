@@ -99,9 +99,9 @@ const zh = {
 
   'home.kicker': '以星辰导航',
   'home.role': '寻路者 · 造物者 · 夜航修补匠',
-  'home.tagline': '我做一些小而讲究的东西——工具、界面，以及互联网上一些偏僻的角落。',
+  'home.tagline': '我做一些小而讲究的东西：工具、界面，还有互联网上一些少有人问津的角落。',
   'home.intro':
-    '「Skr」取自 *seeker*。我写软件的方式像领航员读天空：定一个方位，走完这一段，随水情修正。',
+    '「Skr」取自 *seeker*，意思是寻路者。我写代码就像领航员看星辰认路：先定一个方向，走完这一程，再根据风浪随时修正。',
   'home.cta.read': '翻开航海日志',
   'home.cta.work': '看看作品',
   'home.featured': '精选作品',
@@ -113,7 +113,7 @@ const zh = {
   'home.eyebrowLog': '日志',
 
   'blog.title': '博客',
-  'blog.subtitle': '一份航海日志——记录我造了什么，又弄坏了什么。',
+  'blog.subtitle': '一份航海日志，记录我造了什么，又弄坏了什么。',
   'blog.empty': '这里还空着，第一篇正在写。',
   'blog.readMore': '阅读',
   'blog.readingTime': '分钟',
@@ -133,7 +133,7 @@ const zh = {
   'blog.toc': '本页目录',
 
   'projects.title': '项目',
-  'projects.subtitle': '已经出港的、出到一半的，以及还在船坞里修的。',
+  'projects.subtitle': '已经完工出海的，做到一半的，还有仍在船坞里敲敲打打的。',
   'projects.empty': '船坞暂时是空的。',
   'projects.source': '源码',
   'projects.visit': '访问',
@@ -150,13 +150,13 @@ const zh = {
   'about.title': '关于',
   'about.subtitle': '罗盘背后的人。',
 
-  'footer.builtWith': '用 Astro 构建，手写设计，未套模板。',
+  'footer.builtWith': '基于 Astro 构建，纯手工设计，不套模板。',
   'footer.source': '源码',
   'footer.rss': 'RSS',
   'footer.rights': '保留所有权利。',
 
   '404.title': '偏离航线',
-  '404.body': '这个方位没有海图。你要找的页面不在这里。',
+  '404.body': '没有海图指向这个方位，你要找的页面并不在这里。',
   '404.home': '返回港口',
 } as const;
 
