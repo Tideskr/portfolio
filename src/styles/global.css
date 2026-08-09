@@ -368,6 +368,8 @@
   font-size: 1.0625rem;
   line-height: 1.75;
   font-weight: 400;
+  font-synthesis: none;
+  text-rendering: auto;
   color: var(--ink);
 
   &:lang(zh) {
@@ -375,7 +377,6 @@
     line-height: 1.95;
     font-weight: 450;
     letter-spacing: 0;
-    font-synthesis: none;
   }
 
   > * + * {
