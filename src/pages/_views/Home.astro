@@ -1,9 +1,33 @@
 ---
+/**
+ * Home, as four acts on one stage over one fixed scene.
+ *
+ * The scene — sky, moon, starfield, sea — lives in Base.astro and never moves.
+ * Neither do these acts: they are stacked at the same place in the viewport,
+ * and scrolling drives only how the outgoing one breaks up and how the moon
+ * uncovers the next. Nothing translates, so there is no seam of two rectangles
+ * sliding past each other, which is the thing every earlier version fought.
+ *
+ * The `data-part` attributes are the seams of each dissolve. They exist because
+ * `.rise` and `.rise-title` are `animation: … both`, and a filled animation
+ * beats an inline style outright — a transform written onto those elements
+ * would be discarded. Wrapping them means the dissolve has somewhere to live.
+ * They also carve each act into pieces that leave separately, which is the
+ * difference between an act departing and a rectangle fading out.
+ *
+ * Above the deck's cutoff (see DECK_QUERY in ~/components/deck) this is a
+ * sticky stage; below it, or without JS, the same markup is four ordinary
+ * full-viewport sections. Which is why nothing here is conditional.
+ *
+ * Each act is a summary. The full lists stay on /projects, /blog and /about —
+ * this page is the way in, not a replacement for them.
+ */
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import avatar from '~/assets/avatar.png';
 import CompassRose from '~/components/CompassRose.astro';
+import Coda from '~/components/Coda.astro';
 import Icon from '~/components/Icon.astro';
 import PostCard from '~/components/PostCard.astro';
 import ProjectCard from '~/components/ProjectCard.astro';
@@ -32,192 +56,255 @@ const socials = SOCIALS.map((s) => ({
   href: s.href.startsWith('/') && s.href !== '/rss.xml' ? getRelativeLocaleUrl(lang, s.href) : s.href,
 }));
 
+// One paragraph, kept here rather than in i18n/ui.ts for the same reason
+// About.astro keeps its own: that dictionary is for short strings reused
+// across pages, and prose there would drown the keys that are.
+const aboutLede = {
+  en: 'My interests run from formulas to sound and the written page, then back to everyday life. This site keeps a record of where they sometimes meet.',
+  zh: '兴趣从公式延伸到声音与书页，也落回日常。这里收着它们偶尔相遇的地方。',
+}[lang];
 ---
 
 <Base title={SITE.author} description={t('home.tagline')} lang={lang} bleed>
-  {/* ── Horizon hero ────────────────────────────────────────────────── */}
-  <section
-    class="relative flex min-h-[calc(100svh-11rem)] flex-col overflow-hidden md:min-h-[calc(100svh-13rem)]"
-  >
-    <div
-      aria-hidden="true"
-      class="absolute inset-0 bg-[linear-gradient(180deg,var(--canvas)_0%,var(--canvas-2)_70%,color-mix(in_oklab,var(--color-tide)_26%,var(--canvas-2))_100%)]"
-    >
-    </div>
+  {/* `--acts` is what gives the track its length, so a fifth act is a change
+      here and nowhere else. */}
+  <div class="scene-deck" style="--acts: 4">
+    <div class="scene-stage">
+      {/* One frosted panel for all four acts. Fades in with act two and then
+          stays — see .scene-glass in global.css for why it is not per-act. */}
+      <div class="scene-glass" aria-hidden="true"></div>
 
-    <div aria-hidden="true" class="starfield"></div>
+      {/* ── 1. Opening ─────────────────────────────────────────────────
+        No panel: this act is the picture. It parts like a curtain — the
+        figure and the compass lean right, the text mirrors them left.
+      */}
+      <section id="intro" class="scene-act" data-act="0">
+        <div
+          aria-hidden="true"
+          class="scene-watermark pointer-events-none select-none md:-right-36"
+          data-part="rose"
+        >
+          <CompassRose size={560} letters class="text-accent" />
+        </div>
 
-    <CompassRose
-      size={560}
-      letters
-      class="pointer-events-none absolute top-1/2 -right-60 -translate-y-1/2 text-accent opacity-[0.07] select-none md:-right-36"
-    />
+        <div class="page relative">
+          <div class="grid w-full items-center gap-8 sm:gap-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
+            <div data-part="text">
+              <div class="max-w-xl">
+                <p class="rise eyebrow">{t('home.kicker')}</p>
 
-    <div class="page relative flex flex-1 items-center py-8 sm:py-12 md:py-16">
-      <div
-        class="grid w-full items-center gap-8 sm:gap-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16"
-      >
-        <div class="rise max-w-xl">
-          <p class="eyebrow">{t('home.kicker')}</p>
+                <h1
+                  class="rise-title font-editorial mt-5 text-[2.35rem] leading-[1.14] text-pretty sm:text-5xl md:text-[3.25rem]"
+                  style="--i: 1"
+                  lang="en"
+                >
+                  {t('home.role')}
+                </h1>
 
-          <h1
-            class="font-editorial mt-5 text-[2.35rem] leading-[1.14] text-pretty sm:text-5xl md:text-[3.25rem]"
-            lang="en"
-          >
-            {t('home.role')}
-          </h1>
+                <p class="rise mt-4 text-lg leading-relaxed text-ink-dim text-pretty" style="--i: 2">
+                  {t('home.tagline')}
+                </p>
 
-          <p class="mt-4 text-lg leading-relaxed text-ink-dim text-pretty">{t('home.tagline')}</p>
+                <blockquote
+                  class="rise mt-5 border-l border-accent/45 pl-4 text-sm leading-relaxed text-ink-faint"
+                  style="--i: 3"
+                >
+                  <p>{t('home.intro')}</p>
+                  <cite class="mt-2 block text-xs not-italic text-ink-faint">
+                    {t('home.quoteSource')}
+                  </cite>
+                </blockquote>
 
-          <blockquote
-            class="mt-5 border-l border-accent/45 pl-4 text-sm leading-relaxed text-ink-faint"
-          >
-            <p>{t('home.intro')}</p>
-            <cite class="mt-2 block text-xs not-italic text-ink-faint">
-              {t('home.quoteSource')}
-            </cite>
-          </blockquote>
+                <div class="rise mt-7 flex flex-wrap items-center gap-3" style="--i: 4">
+                  <a
+                    href={getRelativeLocaleUrl(lang, '/blog')}
+                    class="inline-flex items-center gap-2 rounded-lg border border-ink bg-ink px-5 py-2.5 text-sm font-medium text-canvas transition-opacity duration-200 hover:opacity-85"
+                  >
+                    {t('home.cta.read')}
+                    <Icon name="arrowRight" size={14} />
+                  </a>
 
-          <div class="mt-7 flex flex-wrap items-center gap-3">
-            <a
-              href={getRelativeLocaleUrl(lang, '/blog')}
-              class="inline-flex items-center gap-2 rounded-lg border border-ink bg-ink px-5 py-2.5 text-sm font-medium text-canvas transition-opacity duration-200 hover:opacity-85"
-            >
-              {t('home.cta.read')}
-              <Icon name="arrowRight" size={14} />
-            </a>
+                  <a
+                    href={getRelativeLocaleUrl(lang, '/projects')}
+                    class="link-accent inline-flex items-center gap-2 px-1 py-2.5 text-sm font-medium text-ink-dim"
+                  >
+                    {t('home.cta.work')}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative mx-auto md:mx-0" data-part="figure">
+              <div class="rise relative" style="--i: 1.5">
+                <Image
+                  src={avatar}
+                  alt={
+                    lang === 'zh'
+                      ? 'Skr 的头像：暮色海边，一位戴着罗盘耳饰的蓝发女孩望向远方'
+                      : "Skr's avatar: a blue-haired girl with a compass earring looking over the sea at dusk"
+                  }
+                  width={576}
+                  height={576}
+                  widths={[144, 192, 256, 512]}
+                  sizes="(min-width: 768px) 16rem, (min-width: 640px) 12rem, 9rem"
+                  loading="eager"
+                  fetchpriority="high"
+                  class="relative size-36 rounded-full border border-line object-cover shadow-[var(--shadow-lift)] sm:size-48 md:size-64"
+                />
+
+                <span
+                  class="absolute right-0 bottom-0 grid size-10 place-items-center rounded-full border border-line bg-card text-accent shadow-[var(--shadow-lift)]"
+                  aria-hidden="true"
+                >
+                  <CompassRose size={26} ring={false} class="rose-turn" />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 2. Selected work ───────────────────────────────────────────
+        The reverse of the opening: two hulls heeling apart and settling,
+        under a heading that slips away upward.
+      */}
+      <section id="work" class="scene-act" data-act="1">
+        <div class="page">
+          <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3" data-part="head">
+            <div>
+              <p class="eyebrow">{t('home.eyebrowWork')}</p>
+              <h2 class="font-editorial mt-3 text-2xl sm:text-3xl">
+                {t('home.featured')}
+              </h2>
+            </div>
 
             <a
               href={getRelativeLocaleUrl(lang, '/projects')}
-              class="link-accent inline-flex items-center gap-2 px-1 py-2.5 text-sm font-medium text-ink-dim"
+              class="link-accent inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
             >
-              {t('home.cta.work')}
+              {t('home.viewAllProjects')}
+              <Icon name="arrowRight" size={14} />
             </a>
           </div>
+
+          {
+            projects.length > 0 ? (
+              <div class="mt-8 grid gap-5 md:grid-cols-2">
+                {/* `grid` so the card still stretches to the row height, and the
+                    stagger counts across the row rather than the whole list. */}
+                {projects.map((project, i) => (
+                  <div class="grid" data-part="card" style={`--i: ${i % 2}`}>
+                    <ProjectCard project={project} lang={lang} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p class="mt-8 text-sm text-ink-faint">{t('projects.empty')}</p>
+            )
+          }
         </div>
+      </section>
 
-        <div class="rise relative mx-auto md:mx-0">
-          <Image
-            src={avatar}
-            alt={
-              lang === 'zh'
-                ? 'Skr 的头像：暮色海边，一位戴着罗盘耳饰的蓝发女孩望向远方'
-                : "Skr's avatar: a blue-haired girl with a compass earring looking over the sea at dusk"
-            }
-            width={576}
-            height={576}
-            widths={[144, 192, 256, 512]}
-            sizes="(min-width: 768px) 16rem, (min-width: 640px) 12rem, 9rem"
-            loading="eager"
-            fetchpriority="high"
-            class="relative size-36 rounded-full border border-line object-cover shadow-[var(--shadow-lift)] sm:size-48 md:size-64"
-          />
-
-          <span
-            class="absolute right-0 bottom-0 grid size-10 place-items-center rounded-full border border-line bg-card text-accent shadow-[var(--shadow-lift)]"
-            aria-hidden="true"
+      {/* ── 3. Recent writing ──────────────────────────────────────────
+        Pages peeled off one at a time. `--i` is the lag, so the heading
+        leads at -0.5 and the cards follow a beat apart.
+      */}
+      <section id="notes" class="scene-act" data-act="2">
+        <div class="page">
+          <div
+            class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3"
+            data-part="head"
+            style="--i: -0.5"
           >
-            <CompassRose size={26} ring={false} />
-          </span>
-        </div>
-      </div>
-    </div>
+            <div>
+              <p class="eyebrow">{t('home.eyebrowLog')}</p>
+              <h2 class="font-editorial mt-3 text-2xl sm:text-3xl">
+                {t('home.latest')}
+              </h2>
+            </div>
 
-    <div
-      aria-hidden="true"
-      class="absolute inset-x-0 bottom-0 h-px bg-accent/40"
-    >
-    </div>
-  </section>
-
-  {/* ── Selected work ───────────────────────────────────────────────── */}
-  <section class="page mt-16 md:mt-20">
-    <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-      <div>
-        <p class="eyebrow">{t('home.eyebrowWork')}</p>
-        <h2
-          class="font-editorial mt-3 text-2xl sm:text-3xl"
-        >
-          {t('home.featured')}
-        </h2>
-      </div>
-
-      <a
-        href={getRelativeLocaleUrl(lang, '/projects')}
-        class="link-accent inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
-      >
-        {t('home.viewAllProjects')}
-        <Icon name="arrowRight" size={14} />
-      </a>
-    </div>
-
-    {
-      projects.length > 0 ? (
-        <div class="mt-8 grid gap-5 md:grid-cols-2">
-          {projects.map((project) => (
-            <ProjectCard project={project} lang={lang} />
-          ))}
-        </div>
-      ) : (
-        <p class="mt-8 text-sm text-ink-faint">{t('projects.empty')}</p>
-      )
-    }
-  </section>
-
-  {/* ── Recent writing ──────────────────────────────────────────────── */}
-  <section class="page mt-16 md:mt-20">
-    <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-      <div>
-        <p class="eyebrow">{t('home.eyebrowLog')}</p>
-        <h2
-          class="font-editorial mt-3 text-2xl sm:text-3xl"
-        >
-          {t('home.latest')}
-        </h2>
-      </div>
-
-      <a
-        href={getRelativeLocaleUrl(lang, '/blog')}
-        class="link-accent inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
-      >
-        {t('home.viewAll')}
-        <Icon name="arrowRight" size={14} />
-      </a>
-    </div>
-
-    {
-      posts.length > 0 ? (
-        <div class="mt-8 grid gap-5 md:grid-cols-3">
-          {posts.map((post) => (
-            <PostCard post={post} lang={lang} showTags={false} />
-          ))}
-        </div>
-      ) : (
-        <p class="mt-8 text-sm text-ink-faint">{t('blog.empty')}</p>
-      )
-    }
-  </section>
-
-  {/* ── Elsewhere ───────────────────────────────────────────────────── */}
-  <section class="page mt-16 md:mt-20">
-    <p class="eyebrow">{t('home.elsewhere')}</p>
-
-    <ul class="mt-6 flex flex-wrap gap-3">
-      {
-        socials.map((s) => (
-          <li>
             <a
-              href={s.href}
-              rel={s.href.startsWith('http') ? 'me noopener' : undefined}
-              target={s.href.startsWith('http') ? '_blank' : undefined}
-              class="card-surface inline-flex items-center gap-2.5 px-4 py-2 text-sm text-ink-dim transition-[border-color,color] duration-200 hover:border-line-strong hover:text-accent"
+              href={getRelativeLocaleUrl(lang, '/blog')}
+              class="link-accent inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
             >
-              <Icon name={s.icon} size={16} />
-              {s.label}
+              {t('home.viewAll')}
+              <Icon name="arrowRight" size={14} />
             </a>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
+          </div>
+
+          {
+            posts.length > 0 ? (
+              <div class="mt-8 grid gap-5 md:grid-cols-3">
+                {posts.map((post, i) => (
+                  <div class="grid" data-part="page" style={`--i: ${i % 3}`}>
+                    <PostCard post={post} lang={lang} showTags={false} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p class="mt-8 text-sm text-ink-faint">{t('blog.empty')}</p>
+            )
+          }
+        </div>
+      </section>
+
+      {/* ── 4. About & elsewhere ───────────────────────────────────────
+        The end, so it settles rather than parts: the body sinks straight
+        down with no tilt while the chips fan out around the row's middle.
+      */}
+      <section id="about" class="scene-act" data-act="3">
+        <div class="page">
+          <div data-part="body">
+            <p class="eyebrow">{t('nav.about')}</p>
+
+            <h2 class="font-editorial mt-3 text-2xl sm:text-3xl">
+              {t('about.title')}
+            </h2>
+
+            <p class="mt-4 max-w-prose text-lg leading-relaxed text-ink-dim text-pretty">
+              {aboutLede}
+            </p>
+
+            <a
+              href={getRelativeLocaleUrl(lang, '/about')}
+              class="link-accent mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent"
+            >
+              {t('nav.about')}
+              <Icon name="arrowRight" size={14} />
+            </a>
+          </div>
+
+          {/* Icons alone, no heading over them. The links are recognisable
+              without one, and a second eyebrow this close to the first read as
+              two sections crushed together rather than one closing thought. */}
+          <ul class="mt-10 flex flex-wrap gap-2.5">
+            {
+              /* `--flip` alternates the tilt and `--i` spreads the chips from
+                 the middle of the row. Both derive from the index rather than
+                 from a random number, for the reason sea.ts uses an LCG: two
+                 builds of one commit have to agree byte for byte. */
+              socials.map((s, i) => (
+                <li data-part="chip" style={`--i: ${i}; --flip: ${i % 2 ? -1 : 1}`}>
+                  <a
+                    href={s.href}
+                    aria-label={s.label}
+                    title={s.label}
+                    rel={s.href.startsWith('http') ? 'me noopener' : undefined}
+                    target={s.href.startsWith('http') ? '_blank' : undefined}
+                    class="card-surface inline-flex size-11 items-center justify-center text-ink-dim transition-[border-color,color] duration-200 hover:border-line-strong hover:text-accent"
+                  >
+                    <Icon name={s.icon} size={17} />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    {/* Sits in the empty water the exit track leaves behind, and waits for the
+        footer to arrive before it writes itself. */}
+    <Coda lang={lang} />
+  </div>
 </Base>

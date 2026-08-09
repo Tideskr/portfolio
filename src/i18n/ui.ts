@@ -31,7 +31,6 @@ const en = {
   'home.latest': 'New notes',
   'home.viewAll': 'All notes',
   'home.viewAllProjects': 'More projects',
-  'home.elsewhere': 'Elsewhere',
   'home.eyebrowWork': 'Projects',
   'home.eyebrowLog': 'Notes',
 
@@ -109,7 +108,6 @@ const zh = {
   'home.latest': '新近写下',
   'home.viewAll': '全部文章',
   'home.viewAllProjects': '更多项目',
-  'home.elsewhere': '别处',
   'home.eyebrowWork': '项目',
   'home.eyebrowLog': '随笔',
 

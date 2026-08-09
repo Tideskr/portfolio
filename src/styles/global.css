@@ -86,8 +86,70 @@
   --accent-soft: color-mix(in oklab, #78a9ff 15%, transparent);
   --footer-canvas: #02050d;
   --footer-ink: #a5b1c4;
+  --footer-ink-strong: #eef3fb;
   --star-opacity: 1;
   --shadow-lift: 0 16px 38px -26px rgb(0 0 0 / 0.82);
+
+  /* Sea. Water is a body here, not a line — these are fills, and they are the
+     only place colour appears in the hero. */
+  --sea-1: color-mix(in oklab, #78a9ff 10%, transparent);
+  --sea-2: color-mix(in oklab, #78a9ff 15%, transparent);
+  --sea-3: color-mix(in oklab, #78a9ff 22%, transparent);
+  --sea-4: color-mix(in oklab, #78a9ff 30%, transparent);
+  --glade: #cfe0ff;
+  --moon-core: color-mix(in oklab, #78a9ff 20%, transparent);
+  --moon-halo: color-mix(in oklab, #315fa8 12%, transparent);
+
+  /* Cloud. Lit from the moon's side and barely there — a night cloud is the
+     sky being slightly less transparent, not a white shape on it. */
+  --cloud-ink: color-mix(in oklab, #78a9ff 22%, transparent);
+
+  /* Where the moon hangs, and therefore where its reflection has to fall.
+     Theme-independent: one axis, read by both `moonlight` and `moonglade`,
+     because a light source and its glade off by even a little is the fastest
+     way to make a picture like this read as fake. Also the centre of the
+     homepage deck's reveal mask — the moon is what uncovers each new act. */
+  --glade-x: 68%;
+
+  /* Height of the sticky header. The homepage deck pulls itself up by this
+     much so its first act starts flush with the top of the viewport rather
+     than one header below it. */
+  --header-h: 4rem;
+
+  /* Scroll distance for one act change, and for the closing dissolve at the
+     end. The only place either length is written down — deck.ts reads them
+     back off the element, so the two can never disagree. Registered as
+     `<length>` further down, which is what makes that readback a number of
+     pixels rather than the string "380dvh".
+
+     They are this long because the curves are: an act takes about 2.1
+     viewports to arrive and 1.4 to leave, and both have to finish inside one
+     track. See DEPART / ARRIVE in deck.ts.
+
+     The exit is shorter than a dissolve strictly needs, and deliberately so.
+     Whatever it does not spend dissolving the last act it spends showing bare
+     sea, because the footer cannot begin to arrive until the whole track is
+     behind you — the stage stays stuck for `height - 100dvh` no matter what is
+     still on it. Every viewport of slack here is a viewport of blank page. */
+  --deck-track: 390dvh;
+  --deck-exit: 125dvh;
+
+  /* The band over which the footer's ground arrives out of nothing. Here rather
+     than on `.scene-footer` because the deck positions the coda against it. */
+  --footer-fade: 9rem;
+
+  /* The acrylic cloud over the opening act. Off unless something turns it on
+     — see `sky-clouds`. */
+  --sky-cloud: 0;
+
+  /* How far the departing hero dims as it blurs away. */
+  --part-bright: 0.88;
+}
+
+@media (width >= 48rem) {
+  :root {
+    --header-h: 4.5rem;
+  }
 }
 
 :root.light {
@@ -105,10 +167,34 @@
   --accent: #315fa8;
   --accent-quiet: #244a87;
   --accent-soft: #e5ecf7;
-  --footer-canvas: #080d16;
-  --footer-ink: #aeb9ca;
+  /* Daylight ground. A near-black footer under a paper-white page is a hole
+     punched in the bottom of the picture, and the gradient bridge only makes
+     it a soft-edged hole. Cool and pale instead — a shade off `--canvas-2`, so
+     it still reads as ground the sea arrives at rather than more page. */
+  --footer-canvas: #e5eaf1;
+  --footer-ink: #515b69;
+  --footer-ink-strong: #15171b;
   --star-opacity: 0.14;
   --shadow-lift: 0 16px 34px -26px rgb(21 23 27 / 0.32);
+
+  /* Water has to be darker than paper here, not brighter — and so do the
+     glints. On a light ground the sparkle reads as the dark ripple between
+     reflections, because the paper itself is already the highlight. */
+  --sea-1: color-mix(in oklab, #315fa8 11%, transparent);
+  --sea-2: color-mix(in oklab, #315fa8 17%, transparent);
+  --sea-3: color-mix(in oklab, #315fa8 25%, transparent);
+  --sea-4: color-mix(in oklab, #315fa8 34%, transparent);
+  --glade: #24508f;
+  --moon-core: color-mix(in oklab, #315fa8 13%, transparent);
+  --moon-halo: color-mix(in oklab, #315fa8 6%, transparent);
+
+  /* Daylight cloud: white on paper, not blue on ink. */
+  --cloud-ink: color-mix(in oklab, #ffffff 82%, transparent);
+
+  /* Harder than dark. Blur over a pale ground washes toward white instead of
+     receding, so the dimming has to do the retreating that the dark theme
+     gets from the blur alone. */
+  --part-bright: 0.78;
 }
 
 /* Expose the semantic tokens as Tailwind utilities (bg-canvas, text-ink, …). */
@@ -127,6 +213,7 @@
   --color-accent-soft: var(--accent-soft);
   --color-footer-canvas: var(--footer-canvas);
   --color-footer-ink: var(--footer-ink);
+  --color-footer-ink-strong: var(--footer-ink-strong);
 }
 
 /* ---------------------------------------------------------------------------
@@ -138,7 +225,12 @@
     min-width: 0;
   }
 
+  /* The ground colour lives here, not on body. The fixed scene sits at
+     `z-index: -1`, which is behind body's own background but in front of the
+     root's — so an opaque body would hide the sea completely. Keeping it on
+     html also means overscroll shows canvas rather than white. */
   html {
+    background-color: var(--canvas);
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
@@ -151,14 +243,17 @@
   }
 
   body {
-    background-color: var(--canvas);
+    background-color: transparent;
     color: var(--ink);
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
+    /* `clip`, not `hidden`: both trim the hero's overhanging compass, but
+       `hidden` would make body a scroll container and silently break the
+       `position: sticky` the homepage hero depends on. */
+    overflow-x: clip;
   }
 
   /* CJK needs more air between lines and no Latin-style letter-spacing.
@@ -243,24 +338,192 @@
   }
 }
 
-/* A starfield built from tiled radial gradients — no canvas, no JS. */
+/* The ground of the scene: one flat colour behind everything.
+ *
+ * There is deliberately no vertical gradient. A linear wash manufactures a
+ * horizontal band, and a band drawn across the picture is exactly the seam
+ * these versions kept trying to hide. Nothing here moves either — scaling or
+ * translating an opaque fill is invisible except for the edge it exposes, and
+ * that edge was the grey rectangle. Flat and still, so it can never draw one. */
+@utility scene-sky {
+  position: absolute;
+  inset: 0;
+  background-color: var(--canvas);
+}
+
+/* Weather, occasionally.
+ *
+ * Acrylic in the same sense the dissolve is: something with a soft body and a
+ * blurred edge passing in front of the light, rather than a shape drawn on the
+ * sky. Three overlapping ellipses, then a heavy blur over the lot — no PNG, no
+ * SVG filter, and nothing to load.
+ *
+ * `--sky-cloud` gates the whole layer, and the deck drives it: 1 while the
+ * opening act is live, 0 the moment it starts to leave. Clouds over the
+ * projects panel would be weather happening behind a sheet of frosted glass,
+ * which is a picture of nothing. */
+@utility sky-clouds {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 46%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--sky-cloud, 0);
+  /* Nothing near the moon, and nothing near the horizon. A cloud crossing the
+     moon would have to occlude it to be believable, and this one cannot. */
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 34%, transparent 92%);
+  transition: opacity 500ms var(--ease-tide);
+}
+
+@utility sky-cloud {
+  position: absolute;
+  top: var(--cloud-y, 20%);
+  left: 0;
+  width: var(--cloud-w, 30rem);
+  height: var(--cloud-h, 7rem);
+  translate: -40vw 0;
+  opacity: 0;
+  rotate: var(--cloud-tilt, -2deg);
+  background-image:
+    radial-gradient(closest-side, var(--cloud-ink) 0%, transparent 100%),
+    radial-gradient(closest-side, var(--cloud-ink) 0%, transparent 100%),
+    radial-gradient(closest-side, var(--cloud-ink) 0%, transparent 100%);
+  background-size:
+    62% 100%,
+    48% 74%,
+    40% 60%;
+  background-position:
+    18% 60%,
+    58% 30%,
+    82% 66%;
+  background-repeat: no-repeat;
+  filter: blur(18px);
+}
+
+/* The moon, off both axes.
+ *
+ * Radial and off-centre is the whole trick: it reads as a light source without
+ * ever drawing a horizontal edge, which is what a linear gradient cannot avoid
+ * doing — and that edge was what made the first two attempts fragment.
+ *
+ * `--glade-x` is shared with the reflection column below. A light source and
+ * its reflection have to sit on one vertical axis or the picture falls apart
+ * instantly, so both read the same variable. */
+@utility moonlight {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    46% 34% at var(--glade-x) 16%,
+    var(--moon-core) 0%,
+    var(--moon-halo) 42%,
+    transparent 74%
+  );
+}
+
+/* The starfield, placed rather than tiled — see src/components/stars.ts for
+   why, and for where each star's position and brightness come from. */
 @utility starfield {
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: var(--star-opacity);
-  background-image:
-    radial-gradient(1.4px 1.4px at 18% 22%, var(--color-star) 50%, transparent 51%),
-    radial-gradient(1px 1px at 62% 12%, var(--color-star) 50%, transparent 51%),
-    radial-gradient(1.6px 1.6px at 84% 44%, var(--color-star) 50%, transparent 51%),
-    radial-gradient(1px 1px at 33% 68%, var(--color-star) 50%, transparent 51%),
-    radial-gradient(1.2px 1.2px at 8% 82%, var(--color-star) 50%, transparent 51%),
-    radial-gradient(1px 1px at 71% 76%, var(--color-star) 50%, transparent 51%),
-    radial-gradient(1.8px 1.8px at 46% 36%, var(--accent) 50%, transparent 51%),
-    radial-gradient(1px 1px at 95% 18%, var(--color-star) 50%, transparent 51%);
-  background-size: 340px 300px;
-  background-repeat: repeat;
-  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
+  /* Faded out well before the waterline: stars over water read as noise. */
+  mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 66%);
+}
+
+@utility star {
+  position: absolute;
+  border-radius: 999px;
+  background-color: var(--color-star);
+  /* Halved when motion is unwelcome, so a still field sits at the same average
+     brightness a breathing one does rather than at its peak. The breath below
+     overrides this whenever it runs. */
+  opacity: calc(var(--peak, 0.5) * 0.78);
+}
+
+/* Two tints against the white, both rare. A field of one colour reads as
+   printed; a field of three reads as sky. */
+@utility star-dim {
+  background-color: var(--color-star-dim);
+}
+
+@utility star-lit {
+  background-color: var(--accent);
+  box-shadow: 0 0 4px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+
+/* ── Sea ─────────────────────────────────────────────────────────────────
+   Layers for src/components/Sea.astro.
+
+   Fills, not strokes. A stroked sine wave repeated at four offsets is the
+   thing that reads as clipart no matter how it is tuned; a body of water with
+   its own silhouette reads as water. Each swell carries two motions on two
+   nested elements — the wrapper bobs, the svg inside drifts — because one
+   element cannot host two animations that both want `transform`. */
+
+@utility sea {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 46%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@utility sea-swell {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  /* Hangs past the bottom, so a swell can bob upward without lifting the
+     water off the floor of the frame. */
+  bottom: -1.5rem;
+}
+
+@utility sea-drift {
+  display: block;
+  width: 200%;
+  height: 100%;
+}
+
+.sea-1 {
+  fill: var(--sea-1);
+}
+.sea-2 {
+  fill: var(--sea-2);
+}
+.sea-3 {
+  fill: var(--sea-3);
+}
+.sea-4 {
+  fill: var(--sea-4);
+}
+
+/* The moonglade — the reflection column, and the one place this design raises
+   its voice. Narrowed at both edges and faded top and bottom so it is a shaft
+   of light rather than a rectangle of specks. */
+@utility moonglade {
+  position: absolute;
+  /* Starts at the far waterline, not at the top of the frame — a reflection
+     cannot begin above the water it is reflected in. */
+  inset-block: 12% 0;
+  left: calc(var(--glade-x) - 11%);
+  width: 22%;
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 26%, #000 72%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000 34%, #000 66%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* One broken piece of the reflection. Flat, because water stretches a
+   highlight sideways — the ratio is set per glint in sea.ts, not here. */
+@utility glint {
+  position: absolute;
+  border-radius: 999px;
+  background-color: var(--glade);
+  /* Still water when motion is unwelcome: the reflection stays, the sparkle
+     goes. The flicker below overrides this whenever it runs. */
+  opacity: calc(var(--peak, 0.6) * 0.55);
 }
 
 /* Section label: compact mono text with one quiet blue tick. */
@@ -310,13 +573,44 @@
     transform 240ms var(--ease-tide);
 }
 
-@keyframes twinkle {
+/* One star's breath. Never all the way out — a star that reaches zero reads as
+   a dead pixel cycling, not as air moving in front of a light. */
+@keyframes star-breathe {
   0%,
   100% {
-    opacity: var(--star-opacity);
+    opacity: calc(var(--peak) * 0.42);
   }
   50% {
-    opacity: calc(var(--star-opacity) * 0.55);
+    opacity: var(--peak);
+  }
+}
+
+/* A cloud crossing the sky, once in a long while.
+ *
+ * The whole cycle is one pass and then a long wait — the animation spends most
+ * of its period parked off the left edge at zero opacity. That waiting is the
+ * point: a cloud that comes round on a visible schedule stops being weather.
+ *
+ * `translate` rather than `transform`, so the drift and the tilt in `sky-cloud`
+ * can live on one element without one silently discarding the other. */
+@keyframes cloud-drift {
+  0% {
+    translate: -40vw 0;
+    opacity: 0;
+  }
+  6% {
+    opacity: var(--cloud-peak, 0.5);
+  }
+  22% {
+    opacity: var(--cloud-peak, 0.5);
+  }
+  30% {
+    translate: 130vw 0;
+    opacity: 0;
+  }
+  100% {
+    translate: 130vw 0;
+    opacity: 0;
   }
 }
 
@@ -331,15 +625,133 @@
   }
 }
 
+/* The h1 only — a blur filter is the one expensive property here. */
+@keyframes rise-title {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+/* Water moves two ways at once. The horizontal loop is exact (-50% over two
+   authored periods, so it never seams); the vertical bob is a separate,
+   slower clock on the wrapper. The two periods are deliberately coprime with
+   each other and across layers, so the silhouettes between layers never fall
+   back into step — that mismatch is what makes it read as water rather than
+   as a loop. */
+@keyframes sea-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes swell-bob {
+  from {
+    transform: translateY(calc(var(--bob-rise) * -1));
+  }
+  to {
+    transform: translateY(var(--bob-rise));
+  }
+}
+
+/* A reflection does not fade in and out on the spot — it slides along the face
+   of whatever ripple is carrying it and gets stretched thin at both ends. The
+   sway and the stretch therefore ride in one `transform`, since two animations
+   on one element would fight over the property. Peak brightness, period and
+   phase all come from sea.ts, per glint, so no two ever pulse together. */
+@keyframes glint-flicker {
+  0%,
+  100% {
+    opacity: calc(var(--peak) * 0.1);
+    transform: translateX(-9%) scaleX(0.6);
+  }
+  50% {
+    opacity: var(--peak);
+    transform: translateX(7%) scaleX(1.2);
+  }
+}
+
+@keyframes rose-turn {
+  to {
+    rotate: 360deg;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .starfield {
-    animation: twinkle 9s ease-in-out infinite;
+  /* Only about a third of the field carries this — see stars.ts. The rest hold
+     still, and are what give the breathing ones something to move against. */
+  .star-breathe {
+    animation: star-breathe var(--dur) ease-in-out infinite;
+    animation-delay: var(--delay);
   }
-  .starfield-slow {
-    animation: twinkle 14s ease-in-out infinite reverse;
+
+  .sky-cloud {
+    animation: cloud-drift var(--cloud-dur) linear infinite;
+    animation-delay: var(--cloud-delay);
   }
+
+  /* `--i` staggers siblings; the same convention drives scroll reveals below. */
   .rise {
     animation: rise 700ms var(--ease-tide) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  .rise-title {
+    animation: rise-title 760ms var(--ease-tide) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  /* The needle never stops looking for a bearing. */
+  .rose-turn {
+    animation: rose-turn 120s linear infinite;
+  }
+
+  /* Every glint runs on its own clock and starts mid-cycle, so the column is
+     already shimmering on the first frame rather than lighting up together. */
+  .glint {
+    animation: glint-flicker var(--dur) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  /* The sea's two clocks. Both live here rather than on the utilities, so
+     reduced motion leaves a still, fully composed seascape rather than a
+     half-drawn one. */
+  .sea-swell {
+    animation: swell-bob var(--bob) ease-in-out infinite alternate;
+  }
+  .sea-drift {
+    animation: sea-drift var(--drift) linear infinite;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll reveal
+
+   `[data-reveal]` is visible by default; the hidden state is gated on
+   `data-reveal="on"`, which the inline head script sets before first paint
+   only when motion is welcome. No JS, or reduced motion, means a plain page.
+--------------------------------------------------------------------------- */
+
+html[data-reveal='on'] [data-reveal] {
+  opacity: 0;
+}
+
+html[data-reveal='on'] [data-reveal][data-revealed='true'] {
+  animation: rise 620ms var(--ease-tide) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-reveal='on'] [data-reveal] {
+    opacity: 1;
   }
 }
 
@@ -568,4 +980,498 @@
   font-style: var(--shiki-light-font-style) !important;
   font-weight: var(--shiki-light-font-weight) !important;
   text-decoration: var(--shiki-light-text-decoration) !important;
+}
+
+/* ── Scene: Fixed backdrop ────────────────────────────────────────────── */
+
+/* `--scene-lift` is written by the deck once the track runs out and the footer
+   starts arriving — a continuous pixel offset, so no transition here. Anything
+   easing this would be easing something that is already a function of scroll
+   position, and the two clocks would fight. */
+.scene-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  transform: translateY(calc(var(--scene-lift, 0) * 1px));
+}
+
+/* ── Scene: The homepage deck ─────────────────────────────────────────── */
+
+/* Four acts over one fixed sea, none of which ever moves.
+ *
+ * The properties below are registered rather than merely declared, for two
+ * reasons that matter at 60fps. A registered `<number>` is stored as a number,
+ * so the driver's per-frame writes do not re-parse a token stream on every
+ * frame; and each gets a real initial value, which is what lets the fallback
+ * layout below be correct before the driver has written anything at all.
+ *
+ * They inherit on purpose — `--depart` is set on the act and read by parts
+ * several levels down. `--scene-lift` does not, because only one element ever
+ * wants it and inheriting an offset into the whole scene would apply it to
+ * every layer inside as well. */
+@property --depart {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --arrive {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+/* How far *this part* has dissolved. Usually just `--depart`; Notes rewrites it
+   per card to stagger the peel. */
+@property --d {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+/* Opacity of the deck's one frosted panel. Starts at 0 because act one is the
+   picture and wants no glass over it — including in the gap between the inline
+   head script flipping `data-deck` on and the module script actually running. */
+@property --glass {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --scene-lift {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+/* Registered as lengths so deck.ts can read them back as pixels. An
+   unregistered `--deck-exit` resolves to the literal string "170dvh", which
+   `parseFloat` would cheerfully turn into 170. */
+@property --deck-track {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --deck-exit {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+/* The base layer is the fallback, and it is a real page: four ordinary
+   full-viewport sections in normal flow, each with its own frosting. Phones,
+   short windows, reduced motion and no-JS all land here, and none of them get
+   a degraded reading experience — they get a different, simpler one. */
+.scene-deck {
+  position: relative;
+}
+
+.scene-glass {
+  display: none;
+}
+
+.scene-act {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 5rem;
+  background-color: color-mix(in oklab, var(--canvas) 72%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+/* The opening act is the picture. No panel over it, in either layout. */
+.scene-act[data-act='0'] {
+  background-color: transparent;
+  backdrop-filter: none;
+}
+
+/* Vertically centred without `transform`, because the dissolve below claims
+   that property outright — centring there would be discarded the instant a
+   part started moving, and the compass would jump half its own height. */
+.scene-watermark {
+  position: absolute;
+  top: 50%;
+  right: -10rem;
+  translate: 0 -50%;
+  opacity: 0.08;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The footer's ground is not the sea it rises out of — darker than the water
+ * at night, paler than it by day, but never the same colour.
+ *
+ * A hard line between the two is a horizon drawn across the picture — the same
+ * seam the sky and the sections were built to avoid, arriving at the very
+ * bottom instead. So the footer wears its transition instead of butting up
+ * against one: its ground starts as nothing and arrives at full over a tall
+ * band, and the eye never finds a specific place where the water became a page.
+ *
+ * The band is `padding-top`, not a margin. A margin would show the scene
+ * through the gap, which is the seam again with extra steps. */
+.scene-footer {
+  padding-top: var(--footer-fade);
+  background-color: transparent;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    color-mix(in oklab, var(--footer-canvas) 55%, transparent)
+      calc(var(--footer-fade) * 0.55),
+    var(--footer-canvas) var(--footer-fade)
+  );
+}
+
+/* Everywhere except the homepage, the footer rises out of the page rather than
+   out of the sea, and the band above has to say so.
+ *
+ * Prose pages give `main` an opaque ground (see below), so a band that starts
+ * at `transparent` spends its whole height showing the water through the gap
+ * between the two — which draws, in hard light against a dark page, exactly the
+ * horizon this band exists to prevent. Same band, same height, one opaque
+ * colour at each end: the page's ground becomes the footer's with nothing
+ * between them.
+ *
+ * Two stops, not three. The midpoint upstairs is there because mixing toward
+ * `transparent` in a gradient goes through premultiplied alpha and needs a
+ * hand; two opaque colours do not. */
+main:not(:has(.scene-deck)) + .scene-footer {
+  background-image: linear-gradient(
+    to bottom,
+    var(--canvas) 0,
+    var(--footer-canvas) var(--footer-fade)
+  );
+}
+
+/* ── Scene: The coda ──────────────────────────────────────────────────── */
+
+/* One line typed into the water above the footer. See Coda.astro for when.
+ *
+ * The metrics are the base layer's h2 metrics, per language, at a size of their
+ * own — this is a display line, not a note under the footer, and at 14px it
+ * read as the latter. Copied rather than inherited because a <p> is what this
+ * is: nothing here outlines a section, and a heading that no table of contents
+ * should ever list is a heading in the wrong document.
+ *
+ * Every character is in the document from the start and keeps its place there
+ * — only its opacity changes. Typing by appending text would re-wrap the line
+ * on almost every keystroke, and a sentence that reflows while it is being
+ * written is a sentence nobody can read. */
+.scene-coda {
+  margin-top: 5rem;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: 0;
+  /* Dim, not faint: this line sits directly on the water with no frosted panel
+     under it, and faint over pale water in daylight is barely there. */
+  color: var(--ink-dim);
+  text-wrap: balance;
+}
+
+.scene-coda:lang(zh) {
+  font-family: var(--font-display-zh);
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.35;
+  font-synthesis: none;
+}
+
+.coda-char {
+  position: relative;
+}
+
+/* Nothing is hidden until the script has armed the line, and the script is the
+   only thing that writes `data-armed` — so no JS, reduced motion, a thrown
+   exception, the crawler and print all get the whole sentence, plainly visible.
+   Armed on load rather than when typing starts: this strip scrolls into view
+   before the bottom arrives, and a line legible on the way down and then wiped
+   so it can be typed has shown the reader the ending twice. */
+.scene-coda[data-armed] .coda-char {
+  opacity: 0;
+}
+
+.scene-coda[data-armed] .coda-char[data-on] {
+  opacity: 1;
+}
+
+/* The cursor sits on the frontier: the first character not yet typed, which is
+   the one immediately after the last that was. Exactly one element can match
+   that, and when the last character lands nothing does — so the bar marches
+   along and then leaves without anyone having to time its exit.
+
+   Sized in `em` throughout, because the line is 30px in English and 35px in
+   Chinese and a bar fixed at 1.5px is a stroke on one and a hair on the other. */
+.scene-coda[data-armed] .coda-char[data-on] + .coda-char:not([data-on])::before {
+  content: '';
+  position: absolute;
+  top: 0.06em;
+  bottom: 0.06em;
+  left: -0.07em;
+  width: 0.055em;
+  background-color: var(--accent);
+}
+
+/* The one that stays behind and blinks itself out. On the line rather than on
+   the paragraph, because the paragraph is a flex container under the deck and a
+   `::after` there would be laid out as a flex item beside the text instead of
+   as an inline box at the end of it. Declared from the moment the line is armed
+   so the sliver it occupies is already in the layout — appearing at the end it
+   would nudge the centred line sideways just as it finished settling. */
+.scene-coda[data-armed] .coda-line::after {
+  content: '';
+  display: inline-block;
+  width: 0.055em;
+  height: 1em;
+  margin-left: 0.07em;
+  vertical-align: -0.14em;
+  background-color: var(--accent);
+  opacity: 0;
+}
+
+.scene-coda[data-done] .coda-line::after {
+  animation: coda-blink 1.05s steps(1, end) 4 forwards;
+}
+
+@keyframes coda-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Prose pages keep their opaque ground. The scene still renders behind them —
+
+   it shows in the gap above the fold and behind the footer — but paragraphs
+   never sit directly on moving water. */
+main:not(:has(.scene-deck)) {
+  position: relative;
+  background-color: var(--canvas);
+}
+
+/* Above the cutoff the same markup becomes a deck: one sticky stage, four acts
+   stacked on it, and an empty track behind supplying the scroll.
+ *
+ * The floor is `min-height`, not width alone. Three post cards on a 600px-tall
+ * laptop window do not fit a viewport, and an act that has to scroll inside a
+ * stage that is itself pinned is the one arrangement worse than no stage at
+ * all. Kept in sync by hand with DECK_QUERY in deck.ts. */
+@media (min-width: 48rem) and (min-height: 40rem) {
+  /* `--acts` comes from the markup, so adding a fifth act is a markup change
+     and not a stylesheet change. Three transitions, then one viewport where
+     the last act simply sits, then the exit track it dissolves across. */
+  html[data-deck='on'] .scene-deck {
+    height: calc(
+      (var(--acts, 4) - 1) * var(--deck-track) + 100dvh + var(--deck-exit)
+    );
+    /* Start flush with the top of the viewport rather than one header below
+       it, so the first thing a scroll does is dissolve act one — not slide the
+       opening picture up into place. */
+    margin-top: calc(var(--header-h) * -1);
+  }
+
+  html[data-deck='on'] .scene-stage {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+
+  /* The footer starts one fade band early, tucked under the tail of the deck.
+   *
+   * That band is transparent at the top by construction, so what overlaps the
+   * stage is nothing over nothing — the last act has already dissolved by the
+   * time it gets there, and the footer's solid ground still begins exactly
+   * where the track ends. What it buys is the band's own height back: without
+   * it, those 9rem are scrolled through as bare sea, on top of whatever slack
+   * the exit curve left. Empty scroll at the bottom of a page reads as the page
+   * having ended early, and this page ends with a footer.
+   *
+   * Scoped by `:has()` because `data-deck` is written on every page, deck or
+   * not — same test `main:not(:has(.scene-deck))` above uses. */
+  html[data-deck='on']:has(.scene-deck) .scene-footer {
+    margin-top: calc(var(--footer-fade) * -1);
+  }
+
+  /* Parked in the deck's tail rather than in the flow above the footer, because
+     on this layout there is no flow — the four acts are stacked on a stage that
+     occupies one viewport, and everything below them is empty track.
+   *
+   * A band with a height, not a pinned baseline. The earlier version fixed the
+   * line's bottom edge at a constant offset, which held for exactly one font
+   * size, one line count and one footer height; grow the type and it slid down
+   * onto the gradient. Centred inside a band whose floor is the footer's own
+   * top edge, none of the three can push it anywhere. */
+  html[data-deck='on'] .scene-coda {
+    position: absolute;
+    inset-inline: 0;
+    bottom: var(--footer-fade);
+    display: flex;
+    min-height: 38dvh;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+  }
+
+  /* One panel for all four acts, not one each. Per-act panels would fade out
+     and back in at every transition — a visible blink of unfrosted sea between
+     Projects and Notes, where nothing was supposed to change at all. This one
+     rides in with act two on the arrival curve and then simply stays. */
+  html[data-deck='on'] .scene-glass {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: color-mix(in oklab, var(--canvas) 72%, transparent);
+    backdrop-filter: blur(10px);
+    opacity: var(--glass);
+    pointer-events: none;
+  }
+
+  html[data-deck='on'] .scene-act {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    background-color: transparent;
+    backdrop-filter: none;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  /* Before the driver runs, act one is the page. */
+  html[data-deck='on'] .scene-act[data-act='0'] {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Same specificity as the rule above, so source order is what decides — these
+     must stay below it or act one would never leave. */
+  html[data-deck='on'] .scene-act[data-state='off'] {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  html[data-deck='on'] .scene-act[data-state='live'] {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Acrylic: the blur and the desaturation together are what make this read as
+     something dissolving into the air rather than a layer being turned down. */
+  html[data-deck='on'] .scene-act[data-state='leaving'] {
+    visibility: visible;
+    opacity: calc(1 - var(--depart));
+    filter: blur(calc(var(--depart) * 14px)) saturate(calc(1 - var(--depart) * 0.45));
+    pointer-events: none;
+    will-change: opacity, filter;
+  }
+
+  /* Arrival is departure run backwards, plus the moon.
+   *
+   * The mask circle is centred on `--glade-x` — the same axis the moon and its
+   * glade hang on — so "the moonlight uncovers the next act" is literally the
+   * geometry and not a figure of speech. 170% clears the far corner from that
+   * off-centre origin; the 34% gap behind the leading edge is the feather.
+   *
+   * There is no translate here and there must never be one. `scale` at 1.4% is
+   * depth, not travel: the act arrives where it already was. */
+  html[data-deck='on'] .scene-act[data-state='entering'] {
+    visibility: visible;
+    opacity: var(--arrive);
+    filter: blur(calc((1 - var(--arrive)) * 10px));
+    transform: scale(calc(1 + (1 - var(--arrive)) * 0.014));
+    mask-image: radial-gradient(
+      circle at var(--glade-x) 42%,
+      #000 calc(var(--arrive) * 170% - 34%),
+      transparent calc(var(--arrive) * 170%)
+    );
+    pointer-events: none;
+    will-change: opacity, filter, mask-image;
+  }
+
+  /* Each act breaks up along its own axis — see the vectors at the end of this
+     block. Scoped to `leaving` because `--depart` keeps its last value: an act
+     re-entering on the way back up would otherwise wear the displacement it had
+     when it left. */
+  html[data-deck='on'] .scene-act[data-state='leaving'] [data-part] {
+    --d: var(--depart);
+
+    transform: translate(calc(var(--px, 0%) * var(--d)), calc(var(--py, 0%) * var(--d)))
+      rotate(calc(var(--rot, 0deg) * var(--d)));
+  }
+
+  /* Notes staggers instead: each card starts 0.09 later than the one before,
+     and the divisor rescales what is left so the last one still finishes at 1.
+     The heading runs at `--i: -0.5`, half a beat ahead of the first card. */
+  html[data-deck='on'] .scene-act[data-state='leaving'] [data-part='page'] {
+    --d: clamp(0, calc((var(--depart) - var(--i, 0) * 0.09) / 0.82), 1);
+  }
+
+  /* ── Where each act goes ────────────────────────────────────────────
+     Four different axes on purpose. One dissolve reused four times stops
+     being an effect and becomes a tic. */
+
+  /* 1 · Overview — a curtain parting. Both halves lean 5° and withdraw up and
+     outward, biased sideways (x ≈ 2.5 × y) so it opens rather than lifts. */
+  [data-act='0'] [data-part='text'] {
+    --px: -18%;
+    --py: -8%;
+    --rot: -5deg;
+  }
+
+  [data-act='0'] [data-part='figure'] {
+    --px: 22%;
+    --py: -8%;
+    --rot: 5deg;
+  }
+
+  [data-act='0'] [data-part='rose'] {
+    --px: 30%;
+    --py: -10%;
+    --rot: 5deg;
+  }
+
+  /* 2 · Projects — the reverse: two hulls heeling apart and settling, after a
+     heading that slips away upward. */
+  [data-act='1'] [data-part='head'] {
+    --px: -10%;
+    --py: -9%;
+    --rot: -2deg;
+  }
+
+  [data-act='1'] [data-part='card'] {
+    --px: calc(var(--i, 0) * 28% - 14%);
+    --py: 6%;
+    --rot: calc(var(--i, 0) * 8deg - 4deg);
+  }
+
+  /* 3 · Notes — pages peeled off one at a time, all on the same heading. */
+  [data-act='2'] [data-part='head'],
+  [data-act='2'] [data-part='page'] {
+    --px: -16%;
+    --py: -14%;
+    --rot: -5deg;
+  }
+
+  /* 4 · About & elsewhere — the end, so it settles rather than parts. The body
+     sinks straight down with no tilt; the chips fan out around the middle of
+     the row, index-derived so two builds of one commit agree. */
+  [data-act='3'] [data-part='body'] {
+    --py: 7%;
+  }
+
+  [data-act='3'] [data-part='chip'] {
+    --px: calc((var(--i, 0) - 2.5) * 7%);
+    --py: 10%;
+    --rot: calc(var(--flip, 1) * 4deg);
+  }
 }

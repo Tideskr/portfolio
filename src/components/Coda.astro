@@ -1,0 +1,181 @@
+---
+/**
+ * The closing line, typed out in the empty water above the footer.
+ *
+ * The deck's exit track ends with the last act dissolved and nothing left on
+ * screen but sea. That strip is unavoidable — the stage cannot unstick until
+ * the whole track is behind you — so rather than shrink it to nothing this
+ * puts one sentence there, and waits until the footer has fully arrived to
+ * write it. Reaching the bottom is the one thing the reader did to earn it.
+ *
+ * The characters are split here, at build time, not in the browser: the whole
+ * sentence is in the HTML either way, so a reader without JS gets the line and
+ * a screen reader gets it as one string rather than sixty.
+ */
+import type { Locale } from '~/consts';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+/**
+ * Kept here rather than in i18n/ui.ts, for the same reason Home.astro keeps its
+ * About lede there: that dictionary is for short strings reused across pages.
+ *
+ * The two lines are not translations of each other, which is the same choice
+ * the opening quote makes — Stevenson in English, 屈原 in Chinese. Each is a
+ * line that was already good in its own language, and both happen to name what
+ * is actually on this page: a ship and a star over water, stars and a moon
+ * over a river. Masefield died in 1967 and *Sea-Fever* was printed in 1902;
+ * 杜甫 needs no clearance.
+ *
+ * `tick` is per-language because a Chinese character carries several times the
+ * word of a Latin letter — the same interval that reads as typing in English
+ * reads as a flicker in Chinese.
+ */
+const CODA = {
+  en: {
+    line: 'All I ask is a tall ship and a star to steer her by.',
+    tick: 52,
+  },
+  zh: {
+    line: '星垂平野阔，月涌大江流。',
+    tick: 175,
+  },
+}[lang];
+
+/**
+ * Extra milliseconds to wait *after* a character, on top of the tick.
+ *
+ * Punctuation is where a line breathes, and a typewriter that runs through a
+ * comma at the same rate as a letter is reciting rather than writing. The
+ * Chinese marks get the longer holds: a 逗号 divides a five-character clause
+ * from its answering five, which is a whole beat, where an English comma is
+ * usually a hitch.
+ */
+const HOLD: Record<string, number> = {
+  '，': 400,
+  '、': 300,
+  '；': 400,
+  '：': 320,
+  '。': 520,
+  '！': 520,
+  '？': 520,
+  '…': 460,
+  ',': 170,
+  ';': 220,
+  ':': 200,
+  '.': 300,
+  '!': 300,
+  '?': 300,
+};
+
+// `Array.from`, not `.split('')` — the latter cuts astral code points in half.
+const chars = Array.from(CODA.line).map((c) => ({ c, hold: HOLD[c] ?? 0 }));
+---
+
+<p class="scene-coda page text-center" data-coda data-tick={String(CODA.tick)}>
+  <span class="sr-only">{CODA.line}</span>
+
+  <span class="coda-line" aria-hidden="true">
+    {
+      chars.map((ch) => (
+        <span class="coda-char" data-hold={ch.hold ? String(ch.hold) : undefined}>
+          {ch.c}
+        </span>
+      ))
+    }
+  </span>
+</p>
+
+<script>
+  /**
+   * Two jobs: notice that the footer has fully arrived, then type.
+   *
+   * The reveal used to be a chain of CSS animations, one per character, each
+   * with its own delay, all armed by a single attribute write. That is fewer
+   * moving parts on paper and worse in every way that matters: the progress
+   * lives only in the compositor, so a half-typed line cannot be inspected;
+   * and any re-insertion of the stylesheet — which is what Vite's HMR does on
+   * every CSS edit — restarts all of them at once, so the line silently rewinds
+   * and replays. Here the frontier is `data-on` in the DOM, where it can be
+   * read, and nothing outside this loop can move it.
+   */
+  const coda = document.querySelector<HTMLElement>('[data-coda]');
+  const footer = document.querySelector('footer');
+
+  if (coda && footer && document.documentElement.dataset.reveal === 'on') {
+    const chars = Array.from(coda.querySelectorAll<HTMLElement>('.coda-char'));
+    const tick = Number(coda.dataset.tick) || 60;
+
+    /** A beat between landing at the bottom and the first character, so the
+     *  line answers the arrival rather than racing it. */
+    const LEAD = 260;
+
+    let queued = false;
+    let typing = false;
+
+    /**
+     * Blank the line now, not when typing starts.
+     *
+     * The stylesheet hides the characters only under `[data-armed]`, and this is
+     * the only place that attribute is written — so no JS, reduced motion, a
+     * thrown exception, the crawler and print all get the whole sentence,
+     * plainly visible. But it has to happen on load rather than on the trigger:
+     * the strip above the footer scrolls into view well before the bottom
+     * arrives, and a line that is legible on the way down and then wiped so it
+     * can be typed out has shown the reader the ending twice.
+     *
+     * Safe to do here because the coda sits below the deck's whole exit track.
+     * There is no scroll position from which it is visible on first paint.
+     */
+    coda.dataset.armed = '';
+
+    function type(i: number) {
+      const el = chars[i];
+      el.dataset.on = '';
+
+      if (i + 1 >= chars.length) {
+        coda!.dataset.done = '';
+        return;
+      }
+
+      // Punctuation holds the cursor a beat longer — see HOLD above.
+      window.setTimeout(() => type(i + 1), tick + (Number(el.dataset.hold) || 0));
+    }
+
+    /**
+     * Fire when the footer's last pixel arrives, which on a page that ends in
+     * the footer is the moment the reader hits the bottom.
+     *
+     * An IntersectionObserver would be the obvious tool and is the wrong one: a
+     * footer taller than the viewport can never reach ratio 1, so the threshold
+     * that means "fully out" would simply never cross. The edge test below is
+     * true whatever the two heights are.
+     */
+    const read = () => {
+      queued = false;
+      if (typing || !chars.length) return;
+
+      const box = footer.getBoundingClientRect();
+      if (box.bottom > window.innerHeight + 2 || box.top >= window.innerHeight) return;
+
+      typing = true;
+      window.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
+      window.setTimeout(() => type(0), LEAD);
+    };
+
+    function check() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(read);
+    }
+
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    check();
+  }
+</script>

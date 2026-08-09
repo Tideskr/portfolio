@@ -8,6 +8,12 @@
       "port": 4321
     },
     {
+      "name": "portfolio-agent",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "autoPort": true
+    },
+    {
       "name": "live",
       "url": "https://skr.moe"
     }

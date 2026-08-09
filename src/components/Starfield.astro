@@ -1,0 +1,41 @@
+---
+/**
+ * The stars over the sea.
+ *
+ * Placed rather than tiled. The old version repeated eight radial gradients in
+ * a 340×300 box, which is cheap and also the one thing a night sky must never
+ * look like — the eye finds the period in about a second, and after that the
+ * whole picture reads as wallpaper.
+ *
+ * Geometry, including which stars breathe, lives in ./stars.ts.
+ */
+import { stars } from './stars';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+// Enough to look deep once the mask has thinned the lower half, few enough
+// that the markup stays under a couple of kilobytes gzipped.
+const field = stars(84);
+---
+
+<div aria-hidden="true" class:list={['starfield', className]}>
+  {
+    field.map((s) => (
+      <span
+        class:list={[
+          'star',
+          s.hue === 1 && 'star-dim',
+          s.hue === 2 && 'star-lit',
+          s.dur > 0 && 'star-breathe',
+        ]}
+        style={`left:${s.x}%;top:${s.y}%;width:${s.size}px;height:${s.size}px;--peak:${s.peak}${
+          s.dur > 0 ? `;--dur:${s.dur}s;--delay:${s.delay}s` : ''
+        }`}
+      />
+    ))
+  }
+</div>

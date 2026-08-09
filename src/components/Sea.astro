@@ -1,0 +1,60 @@
+---
+/**
+ * The moonlit sea under the hero.
+ *
+ * Four bodies of water, drifting at four speeds and rising on four separate
+ * clocks, with the moon's reflection broken across them. It runs on load and
+ * never stops — the hero has to be alive before anyone scrolls.
+ *
+ * Every layer is two nested elements on purpose: the wrapper bobs, the svg
+ * inside drifts. One element cannot host two animations that both want
+ * `transform`; the later one simply wins and the other silently disappears.
+ *
+ * Geometry, including the reflection, lives in ./sea.ts.
+ */
+import { SWELLS, glints } from './sea';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+// Enough to read as a broken reflection, few enough that the near end stays
+// sparse. Past ~50 the column silts up and stops looking like water.
+const specks = glints(40);
+---
+
+<div aria-hidden="true" class:list={['sea', className]}>
+  {
+    SWELLS.map((swell, i) => (
+      <>
+        <div
+          class="sea-swell"
+          style={`--drift:${swell.drift}s;--bob:${swell.bob}s;--bob-rise:${swell.rise}`}
+        >
+          {/* Stretching a filled mass is invisible; stretching a line or a
+              figure is not. That is the whole reason this layer is a body. */}
+          <svg class="sea-drift" viewBox="0 0 1200 200" preserveAspectRatio="none" fill="none">
+            <path d={swell.d} class={swell.fill} />
+          </svg>
+        </div>
+
+        {/* In front of the middle distance, behind the two near layers: the
+            reflection lies on the surface, so any swell closer than it passes
+            in front — and only those. Sinking it behind all four would put
+            three sheets of water over the brightest glints. */}
+        {i === 1 && (
+          <div class="moonglade">
+            {specks.map((g) => (
+              <span
+                class="glint"
+                style={`left:${g.x}%;top:${g.y}%;width:${g.w}px;height:${g.h}px;margin:${-g.h / 2}px 0 0 ${-g.w / 2}px;--peak:${g.peak};--dur:${g.dur}s;--delay:${g.delay}s`}
+              />
+            ))}
+          </div>
+        )}
+      </>
+    ))
+  }
+</div>

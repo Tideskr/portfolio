@@ -42,8 +42,10 @@ const archived = all.filter((p) => p.data.archived);
     {
       active.length > 0 ? (
         <div class="mt-10 grid gap-5 sm:grid-cols-2">
-          {active.map((project) => (
-            <ProjectCard project={project} lang={lang} titleAs="h2" />
+          {active.map((project, i) => (
+            <div class="grid" data-reveal style={`--i: ${i % 2}`}>
+              <ProjectCard project={project} lang={lang} titleAs="h2" />
+            </div>
           ))}
         </div>
       ) : (
@@ -61,8 +63,10 @@ const archived = all.filter((p) => p.data.archived);
           </h2>
 
           <div class="mt-6 grid gap-5 opacity-75 transition-opacity hover:opacity-100 sm:grid-cols-2">
-            {archived.map((project) => (
-              <ProjectCard project={project} lang={lang} />
+            {archived.map((project, i) => (
+              <div class="grid" data-reveal style={`--i: ${i % 2}`}>
+                <ProjectCard project={project} lang={lang} />
+              </div>
             ))}
           </div>
         </section>

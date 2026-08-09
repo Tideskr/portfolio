@@ -1,0 +1,40 @@
+---
+/**
+ * Weather over the opening act.
+ *
+ * Three clouds on three long, mismatched clocks. Each spends most of its cycle
+ * parked off the left edge at zero opacity and crosses once — so what you get
+ * is a cloud every couple of minutes, at a moment you cannot anticipate,
+ * which is the only way this reads as weather rather than as a carousel.
+ *
+ * The periods are deliberately not multiples of each other, for the reason the
+ * swells in sea.ts aren't either: three clocks that share a factor eventually
+ * arrive together, and the day they do the trick is visible.
+ *
+ * Values are literals rather than generated. Three of anything is a list, not
+ * a distribution — an LCG here would obscure the numbers without making them
+ * any less hand-chosen.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const CLOUDS = [
+  { y: '14%', w: '34rem', h: '7.5rem', tilt: '-2deg', peak: 0.5, dur: 97, delay: -12 },
+  { y: '30%', w: '25rem', h: '5.5rem', tilt: '1.5deg', peak: 0.34, dur: 143, delay: -71 },
+  { y: '21%', w: '43rem', h: '9rem', tilt: '-1deg', peak: 0.26, dur: 179, delay: -128 },
+];
+---
+
+<div aria-hidden="true" class:list={['sky-clouds', className]}>
+  {
+    CLOUDS.map((c) => (
+      <div
+        class="sky-cloud"
+        style={`--cloud-y:${c.y};--cloud-w:${c.w};--cloud-h:${c.h};--cloud-tilt:${c.tilt};--cloud-peak:${c.peak};--cloud-dur:${c.dur}s;--cloud-delay:${c.delay}s`}
+      />
+    ))
+  }
+</div>

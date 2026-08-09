@@ -1,7 +1,10 @@
 ---
 import '~/styles/global.css';
+import Clouds from '~/components/Clouds.astro';
 import Footer from '~/components/Footer.astro';
 import Header from '~/components/Header.astro';
+import Sea from '~/components/Sea.astro';
+import Starfield from '~/components/Starfield.astro';
 import { asLocale, canonicalPath, switchLocalePath, useTranslations } from '~/i18n/ui';
 import { HTML_LANG, LOCALES, OG_LOCALE, SITE, type Locale } from '~/consts';
 
@@ -103,7 +106,7 @@ const alternates = LOCALES.map((locale) => ({
     />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- Applied before first paint so the theme never flashes. -->
+    <!-- Applied before first paint so neither the theme nor the reveal flashes. -->
     <script is:inline>
       (function () {
         try {
@@ -116,6 +119,16 @@ const alternates = LOCALES.map((locale) => ({
             var meta = document.querySelector('meta[name="theme-color"]');
             if (meta) meta.setAttribute('content', '#f7f8f6');
           }
+        } catch (e) {}
+
+        // Arms the scroll reveal, and the homepage deck along with it. Set
+        // here rather than in the markup so a reader without JS — or with
+        // reduced motion — gets a page whose content was never hidden and
+        // whose sections were never stacked onto one pinned stage.
+        try {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          document.documentElement.dataset.reveal = 'on';
+          document.documentElement.dataset.deck = 'on';
         } catch (e) {}
       })();
     </script>
@@ -131,6 +144,15 @@ const alternates = LOCALES.map((locale) => ({
       {t('a11y.skip')}
     </a>
 
+    {/* Fixed backdrop: moonlit sea + starfield, stays put across all pages */}
+    <div class="scene-backdrop" aria-hidden="true">
+      <div class="scene-sky"></div>
+      <div class="moonlight"></div>
+      <Clouds />
+      <Starfield />
+      <Sea />
+    </div>
+
     <Header lang={lang} pathname={pathname} basePath={basePath} />
 
     <main id="main" class:list={['flex-1', !bleed && 'pt-12 md:pt-16', className]}>
@@ -138,5 +160,48 @@ const alternates = LOCALES.map((locale) => ({
     </main>
 
     <Footer lang={lang} />
+
+    <script>
+      import { initDeck } from '~/components/deck';
+
+      // Reveal elements as they arrive, and — on the homepage only — hand the
+      // deck its scroll driver. Both are pure enhancement: without this file
+      // the page is four readable sections and nothing is hidden.
+      const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (motionOK) {
+        const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+        if (targets.length > 0) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+                (entry.target as HTMLElement).dataset.revealed = 'true';
+                observer.unobserve(entry.target);
+              }
+            },
+            // Fires a little before the element's top edge clears the fold.
+            { rootMargin: '0px 0px -12% 0px' },
+          );
+
+          for (const target of targets) observer.observe(target);
+        }
+
+        // The stage is opt-in from the head script so it applies before first
+        // paint, which means it is also on if this module never ran. Handing
+        // it back on failure turns a page with three empty viewports of track
+        // below it into the four ordinary sections it degrades to everywhere
+        // else.
+        const deck = document.querySelector<HTMLElement>('.scene-deck');
+        if (deck) {
+          try {
+            initDeck(deck);
+          } catch {
+            delete document.documentElement.dataset.deck;
+          }
+        }
+      }
+    </script>
   </body>
 </html>
