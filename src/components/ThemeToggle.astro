@@ -15,9 +15,11 @@ const t = useTranslations(lang);
 <button
   type="button"
   id="theme-toggle"
-  aria-label={t('a11y.toggleTheme')}
-  title={t('a11y.toggleTheme')}
+  aria-label={t('a11y.themeLight')}
+  title={t('a11y.themeLight')}
   aria-pressed="false"
+  data-label-light={t('a11y.themeLight')}
+  data-label-dark={t('a11y.themeDark')}
   class:list={[
     'inline-flex size-8 items-center justify-center rounded-md border border-line',
     'text-ink-dim transition-colors duration-200 hover:border-line-strong hover:text-ink',
@@ -36,10 +38,17 @@ const t = useTranslations(lang);
     const isLight = root.classList.contains('light');
     document
       .querySelectorAll<HTMLButtonElement>('#theme-toggle')
-      .forEach((b) => b.setAttribute('aria-pressed', String(isLight)));
+      .forEach((b) => {
+        const label = isLight ? b.dataset.labelDark : b.dataset.labelLight;
+        b.setAttribute('aria-pressed', String(isLight));
+        if (label) {
+          b.setAttribute('aria-label', label);
+          b.title = label;
+        }
+      });
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', isLight ? '#f4f7fd' : '#050b1a');
+      ?.setAttribute('content', isLight ? '#f7f8f6' : '#050b1a');
   }
 
   document.addEventListener('click', (event) => {

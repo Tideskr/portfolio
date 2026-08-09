@@ -18,7 +18,7 @@ const wave =
   'M0 6 C 15 0, 30 12, 45 6 S 75 0, 90 6 S 120 12, 135 6 S 165 0, 180 6';
 ---
 
-<div class:list={['flex items-center gap-4 text-brass-fg/45', className]} role="separator">
+<div class:list={['flex items-center gap-4 text-accent/40', className]} role="separator">
   <svg
     class="h-3 flex-1"
     viewBox="0 0 180 12"
@@ -29,7 +29,7 @@ const wave =
     <path d={wave} stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" />
   </svg>
 
-  {glyph && <CompassRose size={22} ring={false} class="shrink-0 text-brass-fg/70" />}
+  {glyph && <CompassRose size={22} ring={false} class="shrink-0 text-accent/65" />}
 
   <svg
     class="h-3 flex-1"

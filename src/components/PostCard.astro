@@ -50,7 +50,7 @@ const foreign = post.data.lang !== lang;
     {
       foreign && (
         <span
-          class="rounded border border-line px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-brass-fg"
+          class="rounded border border-line px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-accent"
           title={`${t('blog.writtenIn')}: ${post.data.lang === 'zh' ? t('blog.langZh') : t('blog.langEn')}`}
         >
           {post.data.lang === 'zh' ? '中文' : 'English'}
@@ -61,7 +61,7 @@ const foreign = post.data.lang !== lang;
 
   <Heading
     class:list={[
-      'mt-3 font-semibold transition-colors duration-200 group-hover:text-beacon-fg',
+      'mt-3 font-medium transition-colors duration-200 group-hover:text-accent',
       featured ? 'text-2xl sm:text-[1.75rem]' : 'text-xl',
     ]}
     lang={post.data.lang === 'zh' ? 'zh-Hans' : 'en'}
@@ -85,7 +85,7 @@ const foreign = post.data.lang !== lang;
           <li>
             <a
               href={getRelativeLocaleUrl(lang, `/blog/tags/${tagHref(tag)}`)}
-              class="inline-block rounded-full border border-line px-2.5 py-0.5 text-xs text-ink-faint transition-colors hover:border-line-strong hover:text-beacon-fg"
+              class="inline-block rounded-md border border-line px-2.5 py-0.5 text-xs text-ink-faint transition-colors hover:border-line-strong hover:text-accent"
             >
               {tag}
             </a>
@@ -96,6 +96,6 @@ const foreign = post.data.lang !== lang;
   }
 
   <span
-    class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-beacon-fg to-transparent transition-transform duration-500 ease-[var(--ease-tide)] group-hover:scale-x-100"
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-accent transition-transform duration-500 ease-[var(--ease-tide)] group-hover:scale-x-100"
     aria-hidden="true"></span>
 </article>

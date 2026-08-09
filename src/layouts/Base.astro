@@ -114,7 +114,7 @@ const alternates = LOCALES.map((locale) => ({
           if (light) {
             document.documentElement.classList.add('light');
             var meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.setAttribute('content', '#f4f7fd');
+            if (meta) meta.setAttribute('content', '#f7f8f6');
           }
         } catch (e) {}
       })();
@@ -123,7 +123,7 @@ const alternates = LOCALES.map((locale) => ({
     <slot name="head" />
   </head>
 
-  <body id="top" class="min-h-dvh">
+  <body id="top" class="flex min-h-dvh flex-col">
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:border focus:border-line focus:bg-card focus:px-4 focus:py-2 focus:text-sm"
@@ -133,7 +133,7 @@ const alternates = LOCALES.map((locale) => ({
 
     <Header lang={lang} pathname={pathname} basePath={basePath} />
 
-    <main id="main" class:list={[!bleed && 'pt-12 md:pt-16', className]}>
+    <main id="main" class:list={['flex-1', !bleed && 'pt-12 md:pt-16', className]}>
       <slot />
     </main>
 

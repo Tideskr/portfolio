@@ -50,14 +50,14 @@ const isMirror = postLang !== lang;
     <header class="mx-auto max-w-prose">
       <a
         href={getRelativeLocaleUrl(lang, '/blog')}
-        class="link-beacon inline-flex items-center gap-1.5 text-sm text-ink-faint hover:text-ink-dim"
+        class="link-accent inline-flex items-center gap-1.5 text-sm text-ink-faint hover:text-ink-dim"
       >
         <Icon name="arrowRight" size={13} class="rotate-180" />
         {t('blog.backToBlog')}
       </a>
 
       <h1
-        class="mt-6 font-[family-name:var(--font-display)] text-3xl leading-[1.18] font-semibold text-balance sm:text-[2.6rem]"
+        class="font-editorial mt-6 text-3xl leading-[1.18] text-balance sm:text-[2.6rem]"
         lang={bodyLang}
       >
         {title}
@@ -88,7 +88,7 @@ const isMirror = postLang !== lang;
 
         {
           isMirror && (
-            <span class="inline-flex items-center gap-1.5 rounded border border-line px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-brass-fg">
+            <span class="inline-flex items-center gap-1.5 rounded border border-line px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-accent">
               {t('blog.writtenIn')}: {postLang === 'zh' ? t('blog.langZh') : t('blog.langEn')}
             </span>
           )
@@ -102,7 +102,7 @@ const isMirror = postLang !== lang;
               <li>
                 <a
                   href={getRelativeLocaleUrl(lang, `/blog/tags/${tagHref(tag)}`)}
-                  class="inline-block rounded-full border border-line px-2.5 py-0.5 text-xs text-ink-faint transition-colors hover:border-line-strong hover:text-beacon-fg"
+                  class="inline-block rounded-md border border-line px-2.5 py-0.5 text-xs text-ink-faint transition-colors hover:border-line-strong hover:text-accent"
                 >
                   {tag}
                 </a>
@@ -149,7 +149,7 @@ const isMirror = postLang !== lang;
                 {t('blog.prev')}
               </span>
               <span
-                class="mt-1.5 block text-sm font-medium group-hover:text-beacon-fg"
+                class="mt-1.5 block text-sm font-medium group-hover:text-accent"
                 lang={older.data.lang === 'zh' ? 'zh-Hans' : 'en'}
               >
                 {older.data.title}
@@ -169,7 +169,7 @@ const isMirror = postLang !== lang;
                 <Icon name="arrowRight" size={12} />
               </span>
               <span
-                class="mt-1.5 block text-sm font-medium group-hover:text-beacon-fg"
+                class="mt-1.5 block text-sm font-medium group-hover:text-accent"
                 lang={newer.data.lang === 'zh' ? 'zh-Hans' : 'en'}
               >
                 {newer.data.title}
@@ -181,7 +181,7 @@ const isMirror = postLang !== lang;
     }
 
     <div class="mt-16 flex justify-center">
-      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+      <CompassRose size={30} ring={false} class="text-accent/40" />
     </div>
   </article>
 </Base>

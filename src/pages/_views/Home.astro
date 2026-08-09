@@ -36,44 +36,41 @@ const socials = SOCIALS.map((s) => ({
 
 <Base title={SITE.author} description={t('home.tagline')} lang={lang} bleed>
   {/* ── Horizon hero ────────────────────────────────────────────────── */}
-  <section class="relative flex min-h-[88svh] flex-col overflow-hidden">
+  <section
+    class="relative flex min-h-[calc(100svh-11rem)] flex-col overflow-hidden md:min-h-[calc(100svh-13rem)]"
+  >
     <div
       aria-hidden="true"
-      class="absolute inset-0 bg-[linear-gradient(180deg,var(--canvas)_0%,var(--canvas-2)_44%,color-mix(in_oklab,var(--color-tide)_38%,var(--canvas-2))_84%,color-mix(in_oklab,var(--color-tide)_58%,var(--canvas))_100%)]"
+      class="absolute inset-0 bg-[linear-gradient(180deg,var(--canvas)_0%,var(--canvas-2)_70%,color-mix(in_oklab,var(--color-tide)_26%,var(--canvas-2))_100%)]"
     >
     </div>
 
     <div aria-hidden="true" class="starfield"></div>
 
-    {/* The lighthouse: one very slow turn of warm light across the horizon. */}
-    <div
-      aria-hidden="true"
-      style="opacity: var(--horizon-glow)"
-      class="beacon-sweep absolute -inset-x-1/4 bottom-0 h-72 blur-xl bg-[conic-gradient(from_140deg_at_50%_100%,transparent_0deg,color-mix(in_oklab,var(--beacon)_38%,transparent)_28deg,transparent_62deg,transparent_186deg,color-mix(in_oklab,var(--beacon)_22%,transparent)_212deg,transparent_244deg)]"
-    >
-    </div>
-
     <CompassRose
-      size={640}
+      size={560}
       letters
-      class="pointer-events-none absolute top-1/2 -right-56 -translate-y-1/2 text-brass-fg opacity-[0.055] select-none md:-right-40"
+      class="pointer-events-none absolute top-1/2 -right-60 -translate-y-1/2 text-accent opacity-[0.07] select-none md:-right-36"
     />
 
-    <div class="page relative flex flex-1 items-center py-20 md:py-24">
-      <div class="grid w-full items-center gap-12 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16">
+    <div class="page relative flex flex-1 items-center py-8 sm:py-12 md:py-16">
+      <div
+        class="grid w-full items-center gap-8 sm:gap-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16"
+      >
         <div class="rise max-w-xl">
           <p class="eyebrow">{t('home.kicker')}</p>
 
           <h1
-            class="mt-6 font-[family-name:var(--font-display)] text-[2.35rem] leading-[1.14] font-semibold text-pretty sm:text-5xl md:text-[3.3rem]"
+            class="font-editorial mt-5 text-[2.35rem] leading-[1.14] text-pretty sm:text-5xl md:text-[3.25rem]"
+            lang="en"
           >
             {t('home.role')}
           </h1>
 
-          <p class="mt-6 text-lg leading-relaxed text-ink-dim text-pretty">{t('home.tagline')}</p>
+          <p class="mt-4 text-lg leading-relaxed text-ink-dim text-pretty">{t('home.tagline')}</p>
 
           <blockquote
-            class="mt-6 border-l border-brass-fg/50 pl-4 text-sm leading-relaxed text-ink-faint"
+            class="mt-5 border-l border-accent/45 pl-4 text-sm leading-relaxed text-ink-faint"
           >
             <p>{t('home.intro')}</p>
             <cite class="mt-2 block text-xs not-italic text-ink-faint">
@@ -81,10 +78,10 @@ const socials = SOCIALS.map((s) => ({
             </cite>
           </blockquote>
 
-          <div class="mt-9 flex flex-wrap items-center gap-3">
+          <div class="mt-7 flex flex-wrap items-center gap-3">
             <a
               href={getRelativeLocaleUrl(lang, '/blog')}
-              class="inline-flex items-center gap-2 rounded-full border border-line-strong bg-card px-5 py-2.5 text-sm font-medium transition-[border-color,color,transform] duration-200 ease-[var(--ease-tide)] hover:-translate-y-0.5 hover:border-beacon-fg/60 hover:text-beacon-fg"
+              class="inline-flex items-center gap-2 rounded-lg border border-ink bg-ink px-5 py-2.5 text-sm font-medium text-canvas transition-opacity duration-200 hover:opacity-85"
             >
               {t('home.cta.read')}
               <Icon name="arrowRight" size={14} />
@@ -92,7 +89,7 @@ const socials = SOCIALS.map((s) => ({
 
             <a
               href={getRelativeLocaleUrl(lang, '/projects')}
-              class="link-beacon inline-flex items-center gap-2 px-1 py-2.5 text-sm font-medium text-ink-dim transition-colors duration-200 hover:text-ink"
+              class="link-accent inline-flex items-center gap-2 px-1 py-2.5 text-sm font-medium text-ink-dim"
             >
               {t('home.cta.work')}
             </a>
@@ -100,12 +97,6 @@ const socials = SOCIALS.map((s) => ({
         </div>
 
         <div class="rise relative mx-auto md:mx-0">
-          <div
-            aria-hidden="true"
-            class="absolute -inset-8 rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--beacon)_16%,transparent),transparent_72%)] blur-2xl"
-          >
-          </div>
-
           <Image
             src={avatar}
             alt={
@@ -115,15 +106,15 @@ const socials = SOCIALS.map((s) => ({
             }
             width={576}
             height={576}
-            widths={[224, 320, 576]}
-            sizes="(min-width: 768px) 18rem, 14rem"
+            widths={[144, 192, 256, 512]}
+            sizes="(min-width: 768px) 16rem, (min-width: 640px) 12rem, 9rem"
             loading="eager"
             fetchpriority="high"
-            class="relative size-56 rounded-full border border-line object-cover shadow-[var(--shadow-lift)] sm:size-64 md:size-72"
+            class="relative size-36 rounded-full border border-line object-cover shadow-[var(--shadow-lift)] sm:size-48 md:size-64"
           />
 
           <span
-            class="absolute right-0 bottom-1 grid size-12 place-items-center rounded-full border border-line bg-card text-brass-fg shadow-[var(--shadow-lift)]"
+            class="absolute right-0 bottom-0 grid size-10 place-items-center rounded-full border border-line bg-card text-accent shadow-[var(--shadow-lift)]"
             aria-hidden="true"
           >
             <CompassRose size={26} ring={false} />
@@ -134,18 +125,18 @@ const socials = SOCIALS.map((s) => ({
 
     <div
       aria-hidden="true"
-      class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-beacon-fg/70 to-transparent"
+      class="absolute inset-x-0 bottom-0 h-px bg-accent/40"
     >
     </div>
   </section>
 
   {/* ── Selected work ───────────────────────────────────────────────── */}
-  <section class="page mt-20 md:mt-28">
+  <section class="page mt-16 md:mt-20">
     <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
       <div>
         <p class="eyebrow">{t('home.eyebrowWork')}</p>
         <h2
-          class="mt-3 font-[family-name:var(--font-display)] text-2xl font-semibold sm:text-3xl"
+          class="font-editorial mt-3 text-2xl sm:text-3xl"
         >
           {t('home.featured')}
         </h2>
@@ -153,7 +144,7 @@ const socials = SOCIALS.map((s) => ({
 
       <a
         href={getRelativeLocaleUrl(lang, '/projects')}
-        class="link-beacon inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
+        class="link-accent inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
       >
         {t('home.viewAllProjects')}
         <Icon name="arrowRight" size={14} />
@@ -174,12 +165,12 @@ const socials = SOCIALS.map((s) => ({
   </section>
 
   {/* ── Recent writing ──────────────────────────────────────────────── */}
-  <section class="page mt-20 md:mt-28">
+  <section class="page mt-16 md:mt-20">
     <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
       <div>
         <p class="eyebrow">{t('home.eyebrowLog')}</p>
         <h2
-          class="mt-3 font-[family-name:var(--font-display)] text-2xl font-semibold sm:text-3xl"
+          class="font-editorial mt-3 text-2xl sm:text-3xl"
         >
           {t('home.latest')}
         </h2>
@@ -187,7 +178,7 @@ const socials = SOCIALS.map((s) => ({
 
       <a
         href={getRelativeLocaleUrl(lang, '/blog')}
-        class="link-beacon inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
+        class="link-accent inline-flex items-center gap-1.5 pb-0.5 text-sm font-medium text-accent"
       >
         {t('home.viewAll')}
         <Icon name="arrowRight" size={14} />
@@ -208,7 +199,7 @@ const socials = SOCIALS.map((s) => ({
   </section>
 
   {/* ── Elsewhere ───────────────────────────────────────────────────── */}
-  <section class="page mt-20 md:mt-28">
+  <section class="page mt-16 md:mt-20">
     <p class="eyebrow">{t('home.elsewhere')}</p>
 
     <ul class="mt-6 flex flex-wrap gap-3">
@@ -219,7 +210,7 @@ const socials = SOCIALS.map((s) => ({
               href={s.href}
               rel={s.href.startsWith('http') ? 'me noopener' : undefined}
               target={s.href.startsWith('http') ? '_blank' : undefined}
-              class="card-surface inline-flex items-center gap-2.5 px-4 py-2 text-sm text-ink-dim transition-[border-color,color] duration-200 hover:border-line-strong hover:text-beacon-fg"
+              class="card-surface inline-flex items-center gap-2.5 px-4 py-2 text-sm text-ink-dim transition-[border-color,color] duration-200 hover:border-line-strong hover:text-accent"
             >
               <Icon name={s.icon} size={16} />
               {s.label}

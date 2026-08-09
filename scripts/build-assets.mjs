@@ -18,20 +18,19 @@ const OUT = new URL('../public/', import.meta.url);
 // Straight from src/styles/global.css — keep them in step by hand.
 const C = {
   canvas: '#050b1a',
-  deep: '#0b1836',
-  swell: '#16264f',
-  ink: '#e8eefb',
-  inkDim: '#93a4c4',
-  accent: '#4c8dff',
-  beacon: '#f6b073',
-  brass: '#c9b896',
+  deep: '#0b1730',
+  swell: '#142641',
+  ink: '#eef3fb',
+  inkDim: '#a5b1c4',
+  accent: '#78a9ff',
+  accentLit: '#b8d1ff',
 };
 
 /**
  * The favicon rose, parameterised so the icon exports and the OG watermark
  * share one drawing rather than drifting apart.
  */
-function rose({ cx, cy, r, colour = C.brass, lit = C.beacon, opacity = 1 }) {
+function rose({ cx, cy, r, colour = C.accent, lit = C.accentLit, opacity = 1 }) {
   const reach = r * 0.78;
   const waist = r * 0.16;
   const arm = (deg, fill, side) => {
@@ -128,25 +127,19 @@ function ogBackground() {
         <stop offset="0.55" stop-color="${C.accent}" stop-opacity="0.08"/>
         <stop offset="1" stop-color="${C.accent}" stop-opacity="0"/>
       </radialGradient>
-      <radialGradient id="beam" cx="0.5" cy="0.5" r="0.5">
-        <stop offset="0" stop-color="${C.beacon}" stop-opacity="0.75"/>
-        <stop offset="1" stop-color="${C.beacon}" stop-opacity="0"/>
-      </radialGradient>
     </defs>
 
     <rect width="${W}" height="${H}" fill="url(#sky)"/>
     ${stars(190, W, H)}
     <ellipse cx="${W / 2}" cy="${H}" rx="${W * 0.75}" ry="${H * 0.5}" fill="url(#glow)"/>
 
-    <!-- The lighthouse on the horizon, the one bright warm point. Kept clear
-         of the rose's south point so the two read as separate things. -->
-    <circle cx="${W * 0.63}" cy="${H * 0.855}" r="44" fill="url(#beam)"/>
-    <circle cx="${W * 0.63}" cy="${H * 0.855}" r="3.4" fill="${C.beacon}"/>
+    <!-- One cool horizon point, kept clear of the rose's south point. -->
+    <circle cx="${W * 0.63}" cy="${H * 0.855}" r="3.4" fill="${C.accentLit}"/>
 
     ${rose({ cx: W * 0.815, cy: H * 0.43, r: 200, opacity: 0.5 })}
 
     <!-- Horizon. The site's TideRule, at poster scale. -->
-    <line x1="72" y1="${H - 96}" x2="${W - 72}" y2="${H - 96}" stroke="${C.brass}" stroke-width="1" opacity="0.28"/>
+    <line x1="72" y1="${H - 96}" x2="${W - 72}" y2="${H - 96}" stroke="${C.accent}" stroke-width="1" opacity="0.28"/>
   </svg>`;
 }
 
@@ -205,7 +198,7 @@ async function main() {
   const eyebrow = await text({
     value: 'CELESTIAL NAVIGATION',
     font: 'Georgia 15',
-    color: C.brass,
+    color: C.accent,
     spacing: 4,
   });
   const wordmark = await text({ value: 'TideSkr', font: 'Georgia Bold 78', color: C.ink });
@@ -214,7 +207,7 @@ async function main() {
     font: 'Georgia 30',
     color: C.inkDim,
   });
-  const domain = await text({ value: 'skr.moe', font: 'Consolas 26', color: C.beacon, spacing: 1 });
+  const domain = await text({ value: 'skr.moe', font: 'Consolas 26', color: C.accent, spacing: 1 });
 
   const og = await sharp(bg)
     .composite([

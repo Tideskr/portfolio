@@ -24,3 +24,6 @@ Thumbs.db
 
 # Scratch space for audits and preview ladders
 .tmp/
+
+# Licensed source fonts; only converted web assets under src/ are committed.
+/fonts/

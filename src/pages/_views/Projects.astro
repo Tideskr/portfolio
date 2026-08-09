@@ -32,7 +32,7 @@ const archived = all.filter((p) => p.data.archived);
     <header>
       <p class="eyebrow">{t('nav.projects')}</p>
 
-      <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+      <h1 class="font-editorial mt-4 text-3xl sm:text-4xl">
         {t('projects.title')}
       </h1>
 
@@ -56,7 +56,7 @@ const archived = all.filter((p) => p.data.archived);
         <section class="mt-16">
           <TideRule />
 
-          <h2 class="mt-10 font-[family-name:var(--font-display)] text-xl font-semibold text-ink-dim">
+          <h2 class="font-editorial mt-10 text-xl font-medium text-ink-dim">
             {t('projects.archived')}
           </h2>
 
@@ -70,7 +70,7 @@ const archived = all.filter((p) => p.data.archived);
     }
 
     <div class="mt-20 flex justify-center">
-      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+      <CompassRose size={30} ring={false} class="text-accent/40" />
     </div>
   </div>
 </Base>

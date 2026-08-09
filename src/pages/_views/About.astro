@@ -79,7 +79,7 @@ const socials = SOCIALS.filter((s) => s.id !== 'rss');
       <div>
         <p class="eyebrow">{t('nav.about')}</p>
 
-        <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+        <h1 class="font-editorial mt-4 text-3xl sm:text-4xl" lang="en">
           {SITE.author}
         </h1>
 
@@ -96,7 +96,7 @@ const socials = SOCIALS.filter((s) => s.id !== 'rss');
     </div>
 
     <section class="mt-16">
-      <h2 class="font-[family-name:var(--font-display)] text-xl font-semibold">
+      <h2 class="font-editorial text-xl font-medium">
         {copy.nowTitle}
       </h2>
 
@@ -104,7 +104,7 @@ const socials = SOCIALS.filter((s) => s.id !== 'rss');
         {
           copy.now.map((item) => (
             <li class="flex gap-3 text-ink-dim">
-              <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-beacon-fg" aria-hidden="true" />
+              <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
               {item}
             </li>
           ))
@@ -113,7 +113,7 @@ const socials = SOCIALS.filter((s) => s.id !== 'rss');
     </section>
 
     <section class="mt-16">
-      <h2 class="font-[family-name:var(--font-display)] text-xl font-semibold">
+      <h2 class="font-editorial text-xl font-medium">
         {copy.contactTitle}
       </h2>
 
@@ -127,7 +127,7 @@ const socials = SOCIALS.filter((s) => s.id !== 'rss');
                 href={social.href}
                 target={social.href.startsWith('http') ? '_blank' : undefined}
                 rel={social.href.startsWith('http') ? 'me noopener noreferrer' : 'me'}
-                class="card-surface inline-flex items-center gap-2 px-3.5 py-2 text-sm transition-[border-color,color] hover:border-line-strong hover:text-beacon-fg"
+                class="card-surface inline-flex items-center gap-2 px-3.5 py-2 text-sm transition-[border-color,color] hover:border-line-strong hover:text-accent"
               >
                 <Icon name={social.icon} size={15} />
                 {social.label}
@@ -139,7 +139,7 @@ const socials = SOCIALS.filter((s) => s.id !== 'rss');
     </section>
 
     <section class="card-surface mt-16 p-6 sm:p-8">
-      <h2 class="font-[family-name:var(--font-display)] text-lg font-semibold text-brass-fg">
+      <h2 class="font-editorial text-lg font-medium text-accent">
         {copy.colophonTitle}
       </h2>
 
@@ -147,7 +147,7 @@ const socials = SOCIALS.filter((s) => s.id !== 'rss');
     </section>
 
     <div class="mt-20 flex justify-center">
-      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+      <CompassRose size={30} ring={false} class="text-accent/40" />
     </div>
   </div>
 </Base>

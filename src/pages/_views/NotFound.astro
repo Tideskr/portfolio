@@ -30,12 +30,12 @@ const elsewhere = NAV.filter((item) => item.path !== '/');
     <div class="mx-auto flex max-w-xl flex-col items-center py-16 text-center sm:py-24">
       <div class="relative">
         <!-- The needle spins because the bearing is lost. -->
-        <CompassRose size={132} letters class="rose-adrift text-brass-fg/45" />
+        <CompassRose size={132} letters class="rose-adrift text-accent/45" />
       </div>
 
       <p class="eyebrow mt-10">404</p>
 
-      <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+      <h1 class="font-editorial mt-4 text-3xl sm:text-4xl">
         {t('404.title')}
       </h1>
 
@@ -43,7 +43,7 @@ const elsewhere = NAV.filter((item) => item.path !== '/');
 
       <a
         href={getRelativeLocaleUrl(lang, '/')}
-        class="card-surface mt-8 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-[border-color,color] hover:border-line-strong hover:text-beacon-fg"
+        class="card-surface mt-8 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-[border-color,color] hover:border-line-strong hover:text-accent"
       >
         <Icon name="arrowRight" size={14} class="rotate-180" />
         {t('404.home')}
@@ -54,7 +54,7 @@ const elsewhere = NAV.filter((item) => item.path !== '/');
           elsewhere.map((item) => (
             <a
               href={getRelativeLocaleUrl(lang, item.path)}
-              class="link-beacon text-ink-faint hover:text-ink-dim"
+              class="link-accent text-ink-faint hover:text-ink-dim"
             >
               {t(item.key)}
             </a>

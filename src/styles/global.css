@@ -1,18 +1,66 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/fraunces/wght.css';
 @import '@fontsource-variable/inter/wght.css';
+@import '@fontsource-variable/noto-serif-sc/wght.css';
+
+@font-face {
+  font-family: 'Anthropic Serif Display';
+  src: url('../assets/fonts/anthropic-serif-display-regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Anthropic Serif Display';
+  src: url('../assets/fonts/anthropic-serif-display-medium.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Anthropic Serif Text';
+  src: url('../assets/fonts/anthropic-serif-text-regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Anthropic Serif Text';
+  src: url('../assets/fonts/anthropic-serif-text-regular-italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Anthropic Serif Text';
+  src: url('../assets/fonts/anthropic-serif-text-semibold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
 
 /* Light mode is opt-in via a class on <html>; dark is the default. */
 @custom-variant light (&:where(.light, .light *));
 
 /* ---------------------------------------------------------------------------
-   Design tokens — "Celestial Navigation"
-   Palette lifted from the avatar: a dusk sea under a starfield, a brass
-   compass rose, and a single warm lighthouse beacon on the horizon.
+   Design tokens — "Blue Editorial Navigation"
+   Warm paper in daylight, a deep starfield at night, and one blue accent.
 --------------------------------------------------------------------------- */
 
 @theme {
-  --font-display: 'Fraunces Variable', ui-serif, Georgia, 'Songti SC', serif;
+  --font-display:
+    'Anthropic Serif Display', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-display-zh:
+    'Noto Serif SC Variable', 'Source Han Serif SC', 'Songti SC', 'STSong',
+    serif;
+  --font-prose-en:
+    'Anthropic Serif Text', Charter, Georgia, 'Times New Roman', serif;
+  --font-prose-zh:
+    'Noto Serif SC Variable', 'Source Han Serif SC', 'Songti SC', 'STSong',
+    serif;
   --font-sans:
     'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
     'PingFang SC', 'HarmonyOS Sans SC', 'Source Han Sans SC',
@@ -23,18 +71,16 @@
 
   /* Raw palette (theme-independent) */
   --color-abyss: #050b1a;
-  --color-deep: #0a1530;
-  --color-surface: #101f42;
-  --color-tide: #1e4fd8;
-  --color-tide-lit: #4c8dff;
-  --color-beacon: #f6b073;
-  --color-star: #e8eefb;
-  --color-star-dim: #93a4c4;
-  --color-brass: #c9b896;
+  --color-deep: #0b1730;
+  --color-surface: #101c31;
+  --color-tide: #315fa8;
+  --color-tide-lit: #78a9ff;
+  --color-star: #eef3fb;
+  --color-star-dim: #8491a8;
 
   /* Vertical rhythm */
-  --spacing-section: 6rem;
-  --spacing-section-lg: 8.5rem;
+  --spacing-section: 4rem;
+  --spacing-section-lg: 5rem;
 
   /* Measure */
   --container-prose: 68ch;
@@ -49,46 +95,42 @@
   color-scheme: dark;
 
   --canvas: #050b1a;
-  --canvas-2: #0a1530;
-  --card: #0e1c3c;
-  --card-hover: #142549;
-  --ink: #e8eefb;
-  --ink-dim: #93a4c4;
-  /* Lifted off the raw palette value (#5f7196) so it clears 4.5:1 even on
-     --card-hover, which is the lightest thing this ever sits on. */
-  --ink-faint: #818fac;
-  --line: color-mix(in oklab, #93a4c4 22%, transparent);
-  --line-strong: color-mix(in oklab, #93a4c4 40%, transparent);
-  --accent: #4c8dff;
-  --accent-quiet: #1e4fd8;
-  --beacon: #f6b073;
-  --brass: #c9b896;
+  --canvas-2: #0b1730;
+  --card: #101c31;
+  --card-hover: #142641;
+  --ink: #eef3fb;
+  --ink-dim: #a5b1c4;
+  --ink-faint: #8491a8;
+  --line: color-mix(in oklab, #8491a8 24%, transparent);
+  --line-strong: color-mix(in oklab, #8491a8 44%, transparent);
+  --accent: #78a9ff;
+  --accent-quiet: #315fa8;
+  --accent-soft: color-mix(in oklab, #78a9ff 15%, transparent);
+  --footer-canvas: #02050d;
+  --footer-ink: #a5b1c4;
   --star-opacity: 1;
-  --horizon-glow: 0.55;
-  --shadow-lift: 0 18px 48px -24px rgb(0 0 0 / 0.85);
+  --shadow-lift: 0 16px 38px -26px rgb(0 0 0 / 0.82);
 }
 
 :root.light {
   color-scheme: light;
 
-  --canvas: #f4f7fd;
-  --canvas-2: #e9eef9;
+  --canvas: #f7f8f6;
+  --canvas-2: #edf0f4;
   --card: #ffffff;
-  --card-hover: #f7f9fe;
-  --ink: #081026;
-  --ink-dim: #48597c;
-  --ink-faint: #5d6b88;
-  --line: color-mix(in oklab, #0a1530 14%, transparent);
-  --line-strong: color-mix(in oklab, #0a1530 28%, transparent);
-  --accent: #1743be;
-  --accent-quiet: #2a5ce0;
-  /* Both are darker than their dark-theme twins: the same hue that reads as a
-     warm glow on the abyss becomes low-contrast text on paper. */
-  --beacon: #a25619;
-  --brass: #79683f;
-  --star-opacity: 0.22;
-  --horizon-glow: 0.3;
-  --shadow-lift: 0 18px 40px -28px rgb(8 16 38 / 0.4);
+  --card-hover: #f2f5f9;
+  --ink: #15171b;
+  --ink-dim: #515b69;
+  --ink-faint: #667180;
+  --line: color-mix(in oklab, #515b69 18%, transparent);
+  --line-strong: color-mix(in oklab, #515b69 34%, transparent);
+  --accent: #315fa8;
+  --accent-quiet: #244a87;
+  --accent-soft: #e5ecf7;
+  --footer-canvas: #080d16;
+  --footer-ink: #aeb9ca;
+  --star-opacity: 0.14;
+  --shadow-lift: 0 16px 34px -26px rgb(21 23 27 / 0.32);
 }
 
 /* Expose the semantic tokens as Tailwind utilities (bg-canvas, text-ink, …). */
@@ -104,8 +146,9 @@
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-quiet: var(--accent-quiet);
-  --color-beacon-fg: var(--beacon);
-  --color-brass-fg: var(--brass);
+  --color-accent-soft: var(--accent-soft);
+  --color-footer-canvas: var(--footer-canvas);
+  --color-footer-ink: var(--footer-ink);
 }
 
 /* ---------------------------------------------------------------------------
@@ -144,8 +187,8 @@
   /* CJK needs more air between lines and no Latin-style letter-spacing.
      The class sits on <html>; body carries its own line-height, so target it. */
   .lang-zh body {
-    line-height: 1.9;
-    letter-spacing: 0.01em;
+    line-height: 1.85;
+    letter-spacing: 0;
   }
 
   h1,
@@ -153,21 +196,21 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-variation-settings: 'SOFT' 0, 'WONK' 1;
-    font-weight: 600;
-    line-height: 1.1;
-    letter-spacing: -0.018em;
+    font-weight: 400;
+    line-height: 1.18;
+    letter-spacing: 0;
     text-wrap: balance;
   }
 
-  .lang-zh h1,
-  .lang-zh h2,
-  .lang-zh h3,
-  .lang-zh h4 {
-    /* Fraunces has no CJK coverage — fall back cleanly rather than mixing. */
-    font-family: var(--font-display);
+  h1:lang(zh),
+  h2:lang(zh),
+  h3:lang(zh),
+  h4:lang(zh) {
+    font-family: var(--font-display-zh);
+    font-weight: 600;
     line-height: 1.35;
     letter-spacing: 0;
+    font-synthesis: none;
   }
 
   p {
@@ -186,7 +229,7 @@
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--beacon) 40%, transparent);
+    background: color-mix(in oklab, var(--accent) 32%, transparent);
     color: var(--ink);
   }
 
@@ -202,6 +245,15 @@
 /* ---------------------------------------------------------------------------
    Motifs
 --------------------------------------------------------------------------- */
+
+@utility font-editorial {
+  font-family: var(--font-display);
+
+  &:lang(zh) {
+    font-family: var(--font-display-zh);
+    font-synthesis: none;
+  }
+}
 
 @utility page {
   width: 100%;
@@ -227,14 +279,14 @@
     radial-gradient(1px 1px at 33% 68%, var(--color-star) 50%, transparent 51%),
     radial-gradient(1.2px 1.2px at 8% 82%, var(--color-star) 50%, transparent 51%),
     radial-gradient(1px 1px at 71% 76%, var(--color-star) 50%, transparent 51%),
-    radial-gradient(1.8px 1.8px at 46% 36%, var(--color-beacon) 50%, transparent 51%),
+    radial-gradient(1.8px 1.8px at 46% 36%, var(--accent) 50%, transparent 51%),
     radial-gradient(1px 1px at 95% 18%, var(--color-star) 50%, transparent 51%);
   background-size: 340px 300px;
   background-repeat: repeat;
   mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
 }
 
-/* Section label: small caps + a brass tick, used above every section title. */
+/* Section label: compact mono text with one quiet blue tick. */
 @utility eyebrow {
   display: inline-flex;
   align-items: center;
@@ -243,34 +295,38 @@
   font-size: 0.72rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--brass);
+  color: var(--accent);
 
   &::before {
     content: '';
     width: 1.75rem;
     height: 1px;
-    background: linear-gradient(to right, transparent, var(--brass));
+    background: var(--accent);
+    opacity: 0.55;
   }
 }
 
-/* Underline that sweeps like a beacon on hover. */
-@utility link-beacon {
-  background-image: linear-gradient(to right, var(--beacon), var(--beacon));
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0% 1px;
-  transition: background-size 260ms var(--ease-tide);
+@utility link-accent {
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.24em;
+  text-decoration-thickness: 1px;
+  transition:
+    color 200ms var(--ease-tide),
+    text-decoration-color 200ms var(--ease-tide);
 
   &:hover,
   &:focus-visible {
-    background-size: 100% 1px;
+    color: var(--accent);
+    text-decoration-color: color-mix(in oklab, var(--accent) 62%, transparent);
   }
 }
 
 @utility card-surface {
   background-color: var(--card);
   border: 1px solid var(--line);
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgb(5 11 26 / 0.025);
   transition:
     border-color 240ms var(--ease-tide),
     background-color 240ms var(--ease-tide),
@@ -284,15 +340,6 @@
   }
   50% {
     opacity: calc(var(--star-opacity) * 0.55);
-  }
-}
-
-@keyframes beacon-sweep {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 
@@ -314,9 +361,6 @@
   .starfield-slow {
     animation: twinkle 14s ease-in-out infinite reverse;
   }
-  .beacon-sweep {
-    animation: beacon-sweep 26s linear infinite;
-  }
   .rise {
     animation: rise 700ms var(--ease-tide) both;
   }
@@ -328,12 +372,18 @@
 
 .prose {
   max-width: var(--container-prose);
+  font-family: var(--font-prose-en);
   font-size: 1.0625rem;
   line-height: 1.75;
+  font-weight: 400;
   color: var(--ink);
 
-  .lang-zh & {
+  &:lang(zh) {
+    font-family: var(--font-prose-zh);
     line-height: 1.95;
+    font-weight: 450;
+    letter-spacing: 0;
+    font-synthesis: none;
   }
 
   > * + * {
@@ -360,7 +410,7 @@
 
   h2 > a.anchor,
   h3 > a.anchor {
-    color: var(--brass);
+    color: var(--accent);
     opacity: 0;
     margin-left: 0.4em;
     transition: opacity 180ms;
@@ -379,18 +429,18 @@
     text-decoration-thickness: 1px;
 
     &:hover {
-      text-decoration-color: var(--beacon);
-      color: var(--beacon);
+      text-decoration-color: var(--accent);
+      color: var(--accent-quiet);
     }
   }
 
   strong {
-    font-weight: 650;
+    font-weight: 600;
     color: var(--ink);
   }
 
   mark {
-    background: color-mix(in oklab, var(--beacon) 30%, transparent);
+    background: color-mix(in oklab, var(--accent) 24%, transparent);
     color: var(--ink);
     padding: 0.08em 0.24em;
     border-radius: 0.2em;
@@ -416,7 +466,7 @@
       width: 5px;
       height: 5px;
       rotate: 45deg;
-      background: var(--brass);
+      background: var(--accent);
     }
   }
 
@@ -424,7 +474,7 @@
     list-style: decimal;
 
     &::marker {
-      color: var(--brass);
+      color: var(--accent);
     }
   }
 
@@ -439,7 +489,7 @@
     color: var(--ink-dim);
     font-style: italic;
 
-    .lang-zh & {
+    &:lang(zh) {
       font-style: normal;
     }
 
@@ -450,11 +500,7 @@
       top: 0.35em;
       bottom: 0.35em;
       width: 2px;
-      background: linear-gradient(
-        to bottom,
-        var(--brass),
-        color-mix(in oklab, var(--brass) 15%, transparent)
-      );
+      background: color-mix(in oklab, var(--accent) 72%, transparent);
     }
   }
 
@@ -503,7 +549,7 @@
   }
 
   th {
-    color: var(--brass);
+    color: var(--accent);
     font-weight: 600;
     font-size: 0.8rem;
     letter-spacing: 0.06em;
@@ -516,6 +562,10 @@
     background: var(--line);
     margin-block: 2.5em;
   }
+}
+
+:root.light .prose:lang(zh) {
+  font-weight: 400;
 }
 
 /* Shiki emits both themes; show the one matching the active theme. */

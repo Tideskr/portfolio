@@ -15,7 +15,8 @@ const en = {
   'nav.close': 'Close menu',
 
   'a11y.skip': 'Skip to main content',
-  'a11y.toggleTheme': 'Switch to light mode',
+  'a11y.themeLight': 'Switch to light mode',
+  'a11y.themeDark': 'Switch to dark mode',
   'a11y.switchLang': 'Switch to Chinese',
   'a11y.toTop': 'Back to top',
 
@@ -92,7 +93,8 @@ const zh = {
   'nav.close': '关闭菜单',
 
   'a11y.skip': '跳转到主要内容',
-  'a11y.toggleTheme': '切换到浅色模式',
+  'a11y.themeLight': '切换到浅色模式',
+  'a11y.themeDark': '切换到深色模式',
   'a11y.switchLang': '切换到英文',
   'a11y.toTop': '回到顶部',
 

@@ -44,7 +44,7 @@ function isCurrent(path: string) {
             {t(item.key as UIKey)}
             <span
               class:list={[
-                'pointer-events-none absolute left-3 right-3 -bottom-px h-px origin-left bg-beacon-fg transition-transform duration-300 ease-[var(--ease-tide)]',
+                'pointer-events-none absolute left-3 right-3 -bottom-px h-px origin-left bg-accent transition-transform duration-300 ease-[var(--ease-tide)]',
                 layout === 'column' && 'left-1 right-1 bottom-1',
                 current ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
               ]}

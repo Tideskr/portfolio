@@ -35,7 +35,7 @@ const fields =
     <header>
       <p class="eyebrow">{t('nav.links')}</p>
 
-      <h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl font-semibold sm:text-4xl">
+      <h1 class="font-editorial mt-4 text-3xl sm:text-4xl">
         {t('links.title')}
       </h1>
 
@@ -55,7 +55,7 @@ const fields =
     }
 
     <section class="card-surface mt-14 p-6 sm:p-8">
-      <h2 class="font-[family-name:var(--font-display)] text-xl font-semibold">
+      <h2 class="font-editorial text-xl font-medium">
         {t('links.exchange')}
       </h2>
 
@@ -66,7 +66,7 @@ const fields =
       <ul class="mt-4 flex flex-wrap gap-1.5">
         {
           fields.map((field) => (
-            <li class="rounded-full border border-line px-2.5 py-0.5 text-xs text-ink-faint">
+            <li class="rounded-md border border-line px-2.5 py-0.5 text-xs text-ink-faint">
               {field}
             </li>
           ))
@@ -84,7 +84,7 @@ const fields =
               <dd>
                 <a
                   href={email.href}
-                  class="link-beacon inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-accent"
+                  class="link-accent inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-accent"
                 >
                   {email.href.replace('mailto:', '')}
                   <Icon name="external" size={12} />
@@ -97,7 +97,7 @@ const fields =
     </section>
 
     <div class="mt-20 flex justify-center">
-      <CompassRose size={30} ring={false} class="text-brass-fg/40" />
+      <CompassRose size={30} ring={false} class="text-accent/40" />
     </div>
   </div>
 </Base>

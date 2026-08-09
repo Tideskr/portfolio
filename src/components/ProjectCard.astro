@@ -16,7 +16,7 @@ const { project, lang, titleAs: Heading = 'h3' } = Astro.props;
 const t = useTranslations(lang);
 
 const data = project.data;
-const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
+const titleLang = lang === 'zh' && data.title.zh !== data.title.en ? 'zh-Hans' : 'en';
 ---
 
 <article
@@ -24,19 +24,16 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
 >
   <div class="flex items-start justify-between gap-4">
     <div
-      class="grid size-11 shrink-0 place-items-center rounded-lg border border-line text-sm font-semibold font-[family-name:var(--font-display)]"
-      style={{ background: `linear-gradient(135deg, color-mix(in oklab, ${accentA} 25%, transparent), color-mix(in oklab, ${accentB} 12%, transparent))` }}
+      class="grid size-11 shrink-0 place-items-center rounded-lg border border-accent/25 bg-accent-soft text-sm font-medium font-[family-name:var(--font-display)] text-accent"
       aria-hidden="true"
     >
-      <span style={{ color: accentA }} class="drop-shadow-[0_1px_0_rgba(255,255,255,0.25)]">
-        {data.title.en.slice(0, 1).toUpperCase()}
-      </span>
+      <span>{data.title.en.slice(0, 1).toUpperCase()}</span>
     </div>
 
     <div class="flex shrink-0 items-center gap-2">
       {
         data.archived && (
-          <span class="rounded-full border border-line px-2 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-ink-faint">
+          <span class="rounded-md border border-line px-2 py-0.5 font-[family-name:var(--font-mono)] text-[0.65rem] tracking-wider text-ink-faint">
             {t('projects.archived')}
           </span>
         )
@@ -46,7 +43,7 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
   </div>
 
   {/* The title is localised, so it must not be pinned to a language. */}
-  <Heading class="mt-4 text-lg leading-snug font-semibold">
+  <Heading class="mt-4 text-lg leading-snug font-medium" lang={titleLang}>
     {data.title[lang]}
   </Heading>
 
@@ -57,7 +54,7 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
   <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">
     {data.stack.map((item) => (
       <li
-        class="rounded-full border border-line px-2.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.7rem] text-ink-faint"
+        class="rounded-md border border-line px-2.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.7rem] text-ink-faint"
         lang="en"
       >
         {item}
@@ -71,7 +68,7 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
         href={data.url}
         target="_blank"
         rel="noopener noreferrer"
-        class="link-beacon inline-flex items-center gap-1.5 text-sm font-medium text-accent"
+        class="link-accent inline-flex items-center gap-1.5 text-sm font-medium text-accent"
       >
         {t('projects.visit')} <Icon name="external" size={13} />
       </a>
@@ -81,7 +78,7 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
         href={data.repo}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1.5 text-sm font-medium text-accent"
+        class="link-accent inline-flex items-center gap-1.5 text-sm font-medium text-accent"
       >
         {t('projects.source')} <Icon name="github" size={13} />
       </a>
@@ -90,7 +87,7 @@ const [accentA, accentB] = data.accent ?? ['#1e4fd8', '#101f42'];
       data.post && (
         <a
           href={getRelativeLocaleUrl(lang, `/blog/${data.post.id}`)}
-          class="inline-flex items-center gap-1.5 text-sm font-medium text-accent"
+          class="link-accent inline-flex items-center gap-1.5 text-sm font-medium text-accent"
         >
           {t('projects.writeup')} <Icon name="arrowRight" size={13} />
         </a>
