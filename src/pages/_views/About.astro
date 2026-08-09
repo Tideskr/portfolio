@@ -23,42 +23,42 @@ const t = useTranslations(lang);
 
 const copy = {
   en: {
-    lede: 'Skr is short for seeker. I build small software, care about the boring details, and write about what I learn along the way.',
+    lede: 'Skr comes from seeker. This is a place for useful tools, unfinished thoughts, and the occasional note on ordinary life.',
     body: [
-      'Most of my work happens below the surface: build pipelines, routing, data formats, and the budget a page has for loading. Nobody demos these parts, but they shape whether a product feels dependable.',
-      'I prefer tools with a clear job, formats that remain readable years later, and interfaces that hold up on a slow connection. I am less interested in adding features than in removing the reasons a feature needs explaining.',
-      'Outside work, I read, take notes, and occasionally make things that have nothing to do with software. That habit usually improves the software.',
+      'Good work rarely announces itself. A page loads without fuss. A file still opens years later. A tool knows where its job ends. These small forms of care make a thing worth keeping.',
+      'Not every idea needs to become a project. Some are better kept as a note; some projects have done enough and can be left alone. The point is not to fill the shelf, but to keep what remains honest and useful.',
+      'Time away from a screen matters too. Reading, walking, and repairing ordinary things restore a sense of scale that software can easily lose.',
     ],
-    nowTitle: 'What I am working on',
+    nowTitle: 'Currently',
     now: [
-      'Keeping this site small enough to understand in one sitting.',
-      'A CLI that gives a repository a useful map: entry points, active files, and ownership.',
-      'Writing about the trade-offs behind tools I use and build.',
+      'Keeping this site light, readable, and easy to tend.',
+      'Working on a small map for unfamiliar codebases.',
+      'Reading about cities, craft, and the shape of everyday routines.',
     ],
-    colophonTitle: 'About this site',
+    colophonTitle: 'This site',
     colophon:
-      'The site is statically generated with Astro. Tailwind supplies the design tokens; there is no client framework. Fraunces and Inter handle Latin text, while CJK text uses the reader’s installed fonts. Most pages ship no JavaScript; theme switching, the mobile menu, and a few small behaviors are the exceptions. Everything is kept in the repository and deployed by CI to a small server behind nginx.',
-    contactTitle: 'Get in touch',
-    contactBody: 'Email is the reliable way to reach me. The other links are places I occasionally post.',
+      'Astro generates the pages. Most of them work without JavaScript; the theme switch and menu are the main exceptions. The source and writing live together in one repository, and deployment produces a set of static files.',
+    contactTitle: 'Contact',
+    contactBody: 'Email is read carefully. Replies may take a little time.',
   },
   zh: {
-    lede: 'Skr 是 seeker 的缩写。我做小型软件，认真对待那些不显眼的细节，也把一路上学到的东西写下来。',
+    lede: 'Skr 取自 seeker。这里放着一些实用的小工具、尚未定形的想法，以及偶尔写下的日常。',
     body: [
-      '我大多数时间都在处理不太适合拿来演示的部分：构建流程、路由、数据格式，以及页面加载要花多少成本。这些东西藏在表面之下，却决定了一个产品是否可靠。',
-      '我偏爱职责清楚的工具、过几年仍然读得懂的格式，以及网络很慢时依旧好用的界面。比起不断增加功能，我更在意删掉那些让功能必须被解释的原因。',
-      '不写代码的时候，我会读书、记笔记，也会做一些和软件无关的东西。很多时候，后者反而会让前者做得更好。',
+      '好东西通常不急着证明自己。页面安静地打开，文件多年后仍能读取，工具也知道该在哪里停下。真正让人愿意久用的，往往正是这些小事。',
+      '不是每个念头都要变成项目。有些适合写成几行笔记，有些做到这里已经足够。架子不必摆满，留下来的东西诚实、好用就好。',
+      '离开屏幕的时间也很重要。读书、散步，或修理手边的旧东西，会把容易丢失的尺度慢慢带回来。',
     ],
-    nowTitle: '最近在做',
+    nowTitle: '近来',
     now: [
-      '把这个站点控制在一眼能看懂的规模。',
-      '做一个给仓库画出实用地图的命令行工具：入口、活跃文件和维护关系。',
-      '写下我使用和构建工具时遇到的取舍。',
+      '继续整理本站，让它轻一点，也更容易照看。',
+      '为陌生的代码仓库做一张小地图。',
+      '读一些关于城市、手艺和日常生活的书。',
     ],
-    colophonTitle: '关于本站',
+    colophonTitle: '本站',
     colophon:
-      '本站使用 Astro 输出静态页面，Tailwind 负责设计令牌，没有引入客户端框架。西文使用 Fraunces 和 Inter，中文使用读者设备已有的字体。大多数页面不发送 JavaScript，主题切换、移动端菜单和少数交互是例外。所有内容都保存在仓库里，再由 CI 部署到 nginx 后面的一台小服务器上。',
-    contactTitle: '联系我',
-    contactBody: '邮件最可靠，我通常都会回复。其他链接是我偶尔发东西的地方。',
+      '页面由 Astro 静态生成。除主题切换和菜单外，大多不需要 JavaScript。文字与源代码放在同一个仓库，部署时再输出为静态文件。',
+    contactTitle: '联系',
+    contactBody: '邮件都会认真读，回复有时会慢一些。',
   },
 }[lang];
 

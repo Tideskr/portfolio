@@ -1,7 +1,7 @@
 {
   "name": "TideSkr — skr.moe",
   "short_name": "skr.moe",
-  "description": "Notes on what I build and what I break.",
+  "description": "Tools, notes, and things worth keeping.",
   "id": "/",
   "start_url": "/",
   "scope": "/",

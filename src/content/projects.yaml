@@ -7,8 +7,8 @@
     en: skr.moe
     zh: skr.moe
   summary:
-    en: The source for this site. A bilingual Astro build with static output, a deliberately small client-side surface, and a design system kept in the repository.
-    zh: 本站的源代码：一个双语 Astro 站点，页面默认静态输出，客户端脚本保持在最低限度，设计系统也直接放在仓库里。
+    en: The code behind this site. Bilingual, static by default, and deliberately quiet in the browser.
+    zh: 本站的代码。双语、默认静态，也尽量不打扰浏览器。
   year: 2026
   stack: [Astro, TypeScript, Tailwind CSS, nginx]
   repo: https://github.com/TideSkr/portfolio
@@ -21,8 +21,8 @@
     en: Driftwood
     zh: Driftwood
   summary:
-    en: A tiny static-file server for local work. It watches a directory, serves files, and reloads the page when something changes.
-    zh: 为本地开发准备的极简静态文件服务器。监听目录、提供文件，内容变化时刷新页面，仅此而已。
+    en: A small local file server. It watches a folder, serves its contents, and refreshes the page when they change.
+    zh: 一个本地文件服务器。监听目录、提供文件，内容变化时刷新页面。
   year: 2025
   stack: [Go, HTTP/2]
   repo: https://github.com/TideSkr/driftwood
@@ -34,8 +34,8 @@
     en: Sextant
     zh: Sextant
   summary:
-    en: A repository-inspection CLI that surfaces entry points, frequently changed files, and the relationships hidden in a codebase.
-    zh: 一个检查代码仓库的命令行工具，把入口、经常变动的文件，以及代码结构里隐藏的关系整理出来。
+    en: 'A map for unfamiliar repositories: entry points, active files, and the connections between them.'
+    zh: 给陌生仓库画一张地图：入口、常改的文件，以及它们之间的联系。
   year: 2025
   stack: [Rust, tree-sitter]
   repo: https://github.com/TideSkr/sextant
@@ -47,8 +47,8 @@
     en: Lighthouse
     zh: Lighthouse
   summary:
-    en: A self-hosted read-later tool that extracted the useful part of a page and stored it locally. Retired after plain Markdown proved simpler.
-    zh: 一个自托管的稍后阅读工具，提取网页正文并保存在本地。后来发现纯 Markdown 更简单，于是停止维护。
+    en: A local read-later service. It was retired when a folder of Markdown files proved sufficient.
+    zh: 一个本地稍后阅读服务。后来发现一组 Markdown 文件已经够用，便停在了这里。
   year: 2024
   stack: [Node.js, SQLite]
   repo: https://github.com/TideSkr/lighthouse
