@@ -34,14 +34,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'Anthropic Serif Text';
-  src: url('../assets/fonts/anthropic-serif-text-semibold.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-}
-
 /* Light mode is opt-in via a class on <html>; dark is the default. */
 @custom-variant light (&:where(.light, .light *));
 
@@ -435,8 +427,12 @@
   }
 
   strong {
-    font-weight: 600;
+    font-weight: 400;
     color: var(--ink);
+  }
+
+  &:lang(zh) strong {
+    font-weight: 600;
   }
 
   mark {
