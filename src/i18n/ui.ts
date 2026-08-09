@@ -20,10 +20,10 @@ const en = {
   'a11y.toTop': 'Back to top',
 
   'home.kicker': 'A small corner of the web',
-  'home.role': 'Tools, notes, and things worth keeping',
-  'home.tagline': 'Made slowly, with room for questions and second thoughts.',
-  'home.intro':
-    'Skr comes from *seeker*. The name is less an answer than a way of paying attention.',
+  'home.role': 'Seeker',
+  'home.tagline': 'Tools, notes, and things worth keeping.',
+  'home.intro': 'To travel hopefully is a better thing than to arrive.',
+  'home.quoteSource': '— Robert Louis Stevenson',
   'home.cta.read': 'Read the notes',
   'home.cta.work': 'See the projects',
   'home.featured': 'A few projects',
@@ -35,7 +35,7 @@ const en = {
   'home.eyebrowLog': 'Notes',
 
   'blog.title': 'Notes',
-  'blog.subtitle': 'Things noticed, considered, and set down before they slip away.',
+  'blog.subtitle': 'Questions, and the things that sometimes cast light on them.',
   'blog.empty': 'No notes here yet.',
   'blog.readMore': 'Read note',
   'blog.readingTime': 'min read',
@@ -55,7 +55,7 @@ const en = {
   'blog.toc': 'On this page',
 
   'projects.title': 'Projects',
-  'projects.subtitle': 'Some are still in use. Others have simply run their course.',
+  'projects.subtitle': 'A few ideas made real enough to use.',
   'projects.empty': 'No projects here yet.',
   'projects.source': 'View source',
   'projects.visit': 'Open project',
@@ -70,7 +70,7 @@ const en = {
   'links.exchangeBody': 'Send a site name, URL, optional avatar, and one short line about it.',
 
   'about.title': 'About',
-  'about.subtitle': 'A little context for what lives here.',
+  'about.subtitle': 'Interests, and the traces they leave here.',
 
   'footer.builtWith': 'Made with Astro. Kept deliberately simple.',
   'footer.source': 'Source',
@@ -97,9 +97,10 @@ const zh = {
   'a11y.toTop': '回到顶部',
 
   'home.kicker': '网络一隅',
-  'home.role': '工具、文字，以及值得留下的东西',
-  'home.tagline': '慢一点做，也给问题和反复留些余地。',
-  'home.intro': 'Skr 取自 *seeker*。比起答案，这个名字更像一种留心观看的方式。',
+  'home.role': 'Seeker',
+  'home.tagline': '工具、文字，以及值得留下的东西。',
+  'home.intro': '路漫漫其修远兮，吾将上下而求索。',
+  'home.quoteSource': '——屈原《离骚》',
   'home.cta.read': '读几篇',
   'home.cta.work': '看项目',
   'home.featured': '几个项目',
@@ -111,7 +112,7 @@ const zh = {
   'home.eyebrowLog': '随笔',
 
   'blog.title': '随笔',
-  'blog.subtitle': '记下一些看见的、想过的，以及不愿太快忘掉的事。',
+  'blog.subtitle': '写下问题，也写下偶然照亮它们的事。',
   'blog.empty': '这里还没有文章。',
   'blog.readMore': '阅读全文',
   'blog.readingTime': '分钟阅读',
@@ -131,7 +132,7 @@ const zh = {
   'blog.toc': '目录',
 
   'projects.title': '项目',
-  'projects.subtitle': '有些仍在使用，有些已经走完了自己的路。',
+  'projects.subtitle': '一些想法，做出来，也用起来。',
   'projects.empty': '暂时还没有项目。',
   'projects.source': '查看源码',
   'projects.visit': '打开项目',
@@ -146,7 +147,7 @@ const zh = {
   'links.exchangeBody': '来信附上站点名称、网址、可选的头像，以及一句简短介绍即可。',
 
   'about.title': '关于',
-  'about.subtitle': '关于这里，以及它为何是现在的样子。',
+  'about.subtitle': '一些兴趣，以及它们在这里留下的痕迹。',
 
   'footer.builtWith': '用 Astro 搭建，尽量保持简单。',
   'footer.source': '源码',

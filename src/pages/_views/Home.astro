@@ -32,8 +32,6 @@ const socials = SOCIALS.map((s) => ({
   href: s.href.startsWith('/') && s.href !== '/rss.xml' ? getRelativeLocaleUrl(lang, s.href) : s.href,
 }));
 
-/** The intro copy carries one `*emphasis*` span; the source is our own dictionary. */
-const intro = t('home.intro').replace(/\*([^*]+)\*/g, '<em class="text-brass-fg not-italic">$1</em>');
 ---
 
 <Base title={SITE.author} description={t('home.tagline')} lang={lang} bleed>
@@ -74,10 +72,14 @@ const intro = t('home.intro').replace(/\*([^*]+)\*/g, '<em class="text-brass-fg 
 
           <p class="mt-6 text-lg leading-relaxed text-ink-dim text-pretty">{t('home.tagline')}</p>
 
-          <p
+          <blockquote
             class="mt-6 border-l border-brass-fg/50 pl-4 text-sm leading-relaxed text-ink-faint"
-            set:html={intro}
-          />
+          >
+            <p>{t('home.intro')}</p>
+            <cite class="mt-2 block text-xs not-italic text-ink-faint">
+              {t('home.quoteSource')}
+            </cite>
+          </blockquote>
 
           <div class="mt-9 flex flex-wrap items-center gap-3">
             <a
