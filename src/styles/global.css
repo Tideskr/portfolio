@@ -1156,10 +1156,13 @@ main:not(:has(.scene-deck)) + .scene-footer {
  * is: nothing here outlines a section, and a heading that no table of contents
  * should ever list is a heading in the wrong document.
  *
- * Every character is in the document from the start and keeps its place there
- * — only its opacity changes. Typing by appending text would re-wrap the line
- * on almost every keystroke, and a sentence that reflows while it is being
- * written is a sentence nobody can read. */
+ * The typed part stays centred, which is the reason the untyped characters are
+ * out of the layout rather than merely invisible. Holding their places would
+ * fix the line's final geometry from the first keystroke — stable, but it means
+ * the sentence starts hard left of centre and walks rightward into position,
+ * and for most of its life it is visibly off-centre in a strip that has nothing
+ * else in it. Removing them costs a reflow per character, which is exactly what
+ * makes the line grow outward from the middle. */
 .scene-coda {
   margin-top: 5rem;
   font-family: var(--font-display);
@@ -1170,7 +1173,12 @@ main:not(:has(.scene-deck)) + .scene-footer {
   /* Dim, not faint: this line sits directly on the water with no frosted panel
      under it, and faint over pale water in daylight is barely there. */
   color: var(--ink-dim);
-  text-wrap: balance;
+  /* No `text-wrap: balance`, though the h2 rule this borrows from has it.
+     Balancing re-splits the whole block every time it changes, and this block
+     changes on every keystroke — the one place it would fire hardest is the
+     character that first overflows the line, where it would yank the text
+     already written into two short halves. The `p` default from the base layer
+     only wraps what no longer fits. */
 }
 
 .scene-coda:lang(zh) {
@@ -1181,48 +1189,35 @@ main:not(:has(.scene-deck)) + .scene-footer {
   font-synthesis: none;
 }
 
-.coda-char {
-  position: relative;
-}
-
 /* Nothing is hidden until the script has armed the line, and the script is the
    only thing that writes `data-armed` — so no JS, reduced motion, a thrown
    exception, the crawler and print all get the whole sentence, plainly visible.
    Armed on load rather than when typing starts: this strip scrolls into view
    before the bottom arrives, and a line legible on the way down and then wiped
-   so it can be typed has shown the reader the ending twice. */
+   so it can be typed has shown the reader the ending twice.
+
+   `display: none`, not `opacity: 0` — an untyped character must take no width,
+   or the typed ones cannot be centred. */
 .scene-coda[data-armed] .coda-char {
-  opacity: 0;
+  display: none;
 }
 
 .scene-coda[data-armed] .coda-char[data-on] {
-  opacity: 1;
+  display: inline;
 }
 
-/* The cursor sits on the frontier: the first character not yet typed, which is
-   the one immediately after the last that was. Exactly one element can match
-   that, and when the last character lands nothing does — so the bar marches
-   along and then leaves without anyone having to time its exit.
-
-   Sized in `em` throughout, because the line is 30px in English and 35px in
-   Chinese and a bar fixed at 1.5px is a stroke on one and a hair on the other. */
-.scene-coda[data-armed] .coda-char[data-on] + .coda-char:not([data-on])::before {
-  content: '';
-  position: absolute;
-  top: 0.06em;
-  bottom: 0.06em;
-  left: -0.07em;
-  width: 0.055em;
-  background-color: var(--accent);
-}
-
-/* The one that stays behind and blinks itself out. On the line rather than on
-   the paragraph, because the paragraph is a flex container under the deck and a
-   `::after` there would be laid out as a flex item beside the text instead of
-   as an inline box at the end of it. Declared from the moment the line is armed
-   so the sliver it occupies is already in the layout — appearing at the end it
-   would nudge the centred line sideways just as it finished settling. */
-.scene-coda[data-armed] .coda-line::after {
+/* The cursor, and now the only one. With the untyped characters out of the
+   layout there is nothing after the frontier to hang a marching bar on, and
+   nothing needs one: `::after` on the line is already exactly there.
+ *
+ * On the line rather than on the paragraph, because the paragraph is a flex
+ * container under the deck and a `::after` there would be laid out as a flex
+ * item beside the text instead of as an inline box at the end of it. Gated on
+ * a character having been typed so no bare cursor sits in the water during the
+ * scroll down. Sized in `em` throughout, because the line is 30px in English
+ * and 35px in Chinese and a bar fixed at 1.5px is a stroke on one and a hair
+ * on the other. */
+.scene-coda[data-armed] .coda-line:has(.coda-char[data-on])::after {
   content: '';
   display: inline-block;
   width: 0.055em;
@@ -1230,9 +1225,9 @@ main:not(:has(.scene-deck)) + .scene-footer {
   margin-left: 0.07em;
   vertical-align: -0.14em;
   background-color: var(--accent);
-  opacity: 0;
 }
 
+/* Four blinks once the sentence is down, then gone. */
 .scene-coda[data-done] .coda-line::after {
   animation: coda-blink 1.05s steps(1, end) 4 forwards;
 }
