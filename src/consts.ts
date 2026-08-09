@@ -8,10 +8,10 @@ import type { IconName } from '~/components/icons';
 export const SITE = {
   domain: 'skr.moe',
   url: 'https://skr.moe',
-  author: 'TideSkr',
+  author: 'Skr',
   /** `skr` is short for *seeker*. */
   handle: 'skr',
-  email: 'hi@skr.moe',
+  email: 'contact@skr.moe',
   startYear: 2026,
 } as const;
 
@@ -40,7 +40,7 @@ export type SocialLink = {
 
 export const SOCIALS: SocialLink[] = [
   { id: 'github', label: 'GitHub', href: 'https://github.com/TideSkr', icon: 'github' },
-  { id: 'x', label: 'X', href: 'https://x.com/TideSkr', icon: 'x' },
+  { id: 'x', label: 'X', href: 'https://x.com/SkrTide', icon: 'x' },
   { id: 'telegram', label: 'Telegram', href: 'https://t.me/TideSkr', icon: 'telegram' },
   { id: 'mail', label: 'Email', href: `mailto:${SITE.email}`, icon: 'mail' },
   { id: 'rss', label: 'RSS', href: '/rss.xml', icon: 'rss' },

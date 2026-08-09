@@ -201,7 +201,7 @@ async function main() {
     color: C.accent,
     spacing: 4,
   });
-  const wordmark = await text({ value: 'TideSkr', font: 'Georgia Bold 78', color: C.ink });
+  const wordmark = await text({ value: 'Skr', font: 'Georgia Bold 78', color: C.ink });
   const tagline = await text({
     value: 'I chart small, well-made things — tools, interfaces,\nand the odd corner of the internet.',
     font: 'Georgia 30',
