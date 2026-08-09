@@ -3,34 +3,20 @@
 @import '@fontsource-variable/noto-serif-sc/wght.css';
 
 @font-face {
-  font-family: 'Anthropic Serif Display';
-  src: url('../assets/fonts/anthropic-serif-display-regular.woff2') format('woff2');
+  font-family: 'Anthropic Serif Variable';
+  src: url('../assets/fonts/anthropic-serif-variable-regular.woff2')
+    format('woff2-variations');
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300 800;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Anthropic Serif Display';
-  src: url('../assets/fonts/anthropic-serif-display-medium.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Anthropic Serif Text';
-  src: url('../assets/fonts/anthropic-serif-text-regular.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Anthropic Serif Text';
-  src: url('../assets/fonts/anthropic-serif-text-regular-italic.woff2') format('woff2');
+  font-family: 'Anthropic Serif Variable';
+  src: url('../assets/fonts/anthropic-serif-variable-italic.woff2')
+    format('woff2-variations');
   font-style: italic;
-  font-weight: 400;
+  font-weight: 300 800;
   font-display: swap;
 }
 
@@ -44,12 +30,12 @@
 
 @theme {
   --font-display:
-    'Anthropic Serif Display', ui-serif, Georgia, 'Times New Roman', serif;
+    'Anthropic Serif Variable', ui-serif, Georgia, 'Times New Roman', serif;
   --font-display-zh:
     'Noto Serif SC Variable', 'Source Han Serif SC', 'Songti SC', 'STSong',
     serif;
   --font-prose-en:
-    'Anthropic Serif Text', Charter, Georgia, 'Times New Roman', serif;
+    'Anthropic Serif Variable', Charter, Georgia, 'Times New Roman', serif;
   --font-prose-zh:
     'Noto Serif SC Variable', 'Source Han Serif SC', 'Songti SC', 'STSong',
     serif;
@@ -364,7 +350,7 @@
 .prose {
   max-width: var(--container-prose);
   font-family: var(--font-prose-en);
-  font-size: 1.0625rem;
+  font-size: 1rem;
   line-height: 1.75;
   font-weight: 400;
   font-feature-settings: normal;
